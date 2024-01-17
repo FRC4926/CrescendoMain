@@ -5,7 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AprilTagAlignment;
+import frc.robot.commands.DriveCommand;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -26,6 +32,15 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static class Subsystems {
     public static DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+    public final static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+    public final static LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
+    public final static VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+  }
+  public static class Commands{
+  public final static ShooterCommand m_shooterCommand = new ShooterCommand();
+  public final static DriveCommand m_DriveCommand = new DriveCommand();
+  public final static AprilTagAlignment m_alignment = new AprilTagAlignment();
+  public final static CommandXboxController controller = new CommandXboxController(0);
   }
 
   public static class Controllers {
