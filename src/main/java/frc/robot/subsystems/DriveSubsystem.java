@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -17,6 +16,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -32,69 +32,87 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.util.LookUpTableCurrentLimits;
 
 public class DriveSubsystem extends SubsystemBase {
   public com.kauailabs.navx.frc.AHRS navX = new AHRS(Port.kMXP);
-public CANSparkMax frontLeftMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_LEFT, MotorType.kBrushless);
+  public CANSparkMax frontLeftMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_LEFT, MotorType.kBrushless);
   public CANSparkMax backLeftMotor = new CANSparkMax(Constants.CAN_IDS.BACK_LEFT, MotorType.kBrushless);
   public CANSparkMax frontRightMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_RIGHT, MotorType.kBrushless);
   public CANSparkMax backRightMotor = new CANSparkMax(Constants.CAN_IDS.BACK_RIGHT, MotorType.kBrushless);
   public RelativeEncoder leftEncoder = frontLeftMotor.getEncoder();
-  public RelativeEncoder rightEncoder=frontRightMotor.getEncoder();
+  public RelativeEncoder rightEncoder = frontRightMotor.getEncoder();
   public DifferentialDrive difDrive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
-
-  //Path Planner Definitions
-    DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(25.9));
+  public boolean driverControlled = false;
+  // Path Planner Definitions
+  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(25.9));
   public Supplier<Double> LeftWheelSpeeds = () -> getLeftWheel();
   public Supplier<Double> RightWheelSpeeds = () -> getRightWheel();
-  DifferentialDriveWheelSpeeds wheelSpeeds = new DifferentialDriveWheelSpeeds(LeftWheelSpeeds.get(),RightWheelSpeeds.get());
-  
+  DifferentialDriveWheelSpeeds wheelSpeeds = new DifferentialDriveWheelSpeeds(LeftWheelSpeeds.get(),
+      RightWheelSpeeds.get());
+
   public ChassisSpeeds m_ChassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
 
-  Pose2d m_pose = new Pose2d(Constants.autonConstants.startingX, Constants.autonConstants.startingY, navX.getRotation2d());
+  Pose2d m_pose = new Pose2d(Constants.autonConstants.startingX, Constants.autonConstants.startingY,
+      navX.getRotation2d());
 
   private DifferentialDriveOdometry m_odometry;
   // void resetPose(){
-  //   m_odometry.resetPosition(gyro.getRotation2d(),frontLeftEncoder.getPosition()*Math.PI * Constants.RobotParameters.wheelDiameter / Constants.RobotParameters.gearRatio,frontRightEncoder.getPosition()*Math.PI * Constants.RobotParameters.wheelDiameter / Constants.RobotParameters.gearRatio,new Pose2d(0, getGyroPitch(), getRotation2D()));
+  // m_odometry.resetPosition(gyro.getRotation2d(),frontLeftEncoder.getPosition()*Math.PI
+  // * Constants.RobotParameters.wheelDiameter /
+  // Constants.RobotParameters.gearRatio,frontRightEncoder.getPosition()*Math.PI *
+  // Constants.RobotParameters.wheelDiameter /
+  // Constants.RobotParameters.gearRatio,new Pose2d(0, getGyroPitch(),
+  // getRotation2D()));
   // }
-  
-   public BooleanSupplier flipPath = () -> false;
+
+  public BooleanSupplier flipPath = () -> false;
   public Consumer<ChassisSpeeds> drive = a -> difDrive.arcadeDrive(a.vxMetersPerSecond, a.omegaRadiansPerSecond);
-  // public Consumer<Pose2d> resetPose = a -> m_odometry.resetPosition(navX.getRotation2d(),leftEncoder.getPosition()*Math.PI * Constants.RobotParameters.kWheelRadiusInches / Constants.RobotParameters.gearRatio,
-  //   rightEncoder.getPosition()*Math.PI * Constants.RobotParameters.kWheelRadiusInches / Constants.RobotParameters.kGearRatio, new Pose2d(0,0,new Rotation2d()));
+  // public Consumer<Pose2d> resetPose = a ->
+  // m_odometry.resetPosition(navX.getRotation2d(),leftEncoder.getPosition()*Math.PI
+  // * Constants.RobotParameters.kWheelRadiusInches /
+  // Constants.RobotParameters.gearRatio,
+  // rightEncoder.getPosition()*Math.PI *
+  // Constants.RobotParameters.kWheelRadiusInches /
+  // Constants.RobotParameters.kGearRatio, new Pose2d(0,0,new Rotation2d()));
   // public Supplier<Pose2d> pose = () -> m_pose;
   // public Supplier<ChassisSpeeds> chassSpeedSupplier = () -> m_ChassisSpeeds;
- // public Consumer<ChassisSpeeds> chassisSpeedConsumer = a -> updateChassisSpeeds(a);
-  //motor groups
+  // public Consumer<ChassisSpeeds> chassisSpeedConsumer = a ->
+  // updateChassisSpeeds(a);
+  // motor groups
 
-    public Rotation2d getRotation2d(){
-      return navX.getRotation2d();
-    }
-    public ChassisSpeeds getChassisSpeeds(){
-      return m_ChassisSpeeds;
-    }
-    public double getLeftWheel(){
-      return getLeftEncoderVelocity();
-    }
-  public double getRightWheel(){
-      return getRightEncoderVelocity();
+  public Rotation2d getRotation2d() {
+    return navX.getRotation2d();
   }
 
-  public void resetGyro () {
+  public ChassisSpeeds getChassisSpeeds() {
+    return m_ChassisSpeeds;
+  }
+
+  public double getLeftWheel() {
+    return getLeftEncoderVelocity();
+  }
+
+  public double getRightWheel() {
+    return getRightEncoderVelocity();
+  }
+
+  public void resetGyro() {
     navX.reset();
   }
 
-  public double getGyroYaw () {
+  public double getGyroYaw() {
     return navX.getYaw() % 360;
   }
 
-  public double getGyroPitch () {
+  public double getGyroPitch() {
     // 0.31 is offset
     return navX.getPitch() % 360;
   }
 
-   private final Field2d field;
-  
+  private final Field2d field;
+
   /** Creates a new ExampleSubsystem. */
   public DriveSubsystem() {
     field = new Field2d();
@@ -115,47 +133,62 @@ public CANSparkMax frontLeftMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_LEFT
     backRightMotor.follow(frontRightMotor);
     frontRightMotor.setInverted(true);
     backRightMotor.setInverted(true);
+
+
+
     navX.reset();
     resetEncoders();
 
     m_odometry = new DifferentialDriveOdometry(navX.getRotation2d(), 0, 0);
-    m_odometry.resetPosition(navX.getRotation2d(),new DifferentialDriveWheelPositions(getLeftEncoderPosition(), getRightEncoderPosition()),new Pose2d(Constants.autonConstants.startingX,Constants.autonConstants.startingY,navX.getRotation2d()));
+    m_odometry.resetPosition(navX.getRotation2d(),
+        new DifferentialDriveWheelPositions(getLeftEncoderPosition(), getRightEncoderPosition()),
+        new Pose2d(Constants.autonConstants.startingX, Constants.autonConstants.startingY, navX.getRotation2d()));
     setBreakMode();
 
     AutoBuilder.configureRamsete(
-      this::getPose, // Robot pose supplier
-      this::resetPose,
-      this::getChassisSpeeds,
-      drive,
-       // Method that will drive the robot given ChassisSpeeds
-      new ReplanningConfig(),
-      flipPath, // Default path replanning config. See the API for the options here
-      this);
+        this::getPose, // Robot pose supplier
+        this::resetPose,
+        this::getChassisSpeeds,
+        drive,
+        // Method that will drive the robot given ChassisSpeeds
+        new ReplanningConfig(),
+        flipPath, // Default path replanning config. See the API for the options here
+        this);
   }
+
   public double getTurnRate() {
     return -navX.getRate();
   }
+
   public double getAverageEncoderDistance() {
     return ((getLeftEncoderPosition() + getRightEncoderPosition()) / 2.0);
   }
-    public void setBreakMode() {
+
+  public void setBreakMode() {
     backLeftMotor.setIdleMode(IdleMode.kBrake);
     frontLeftMotor.setIdleMode(IdleMode.kBrake);
     frontRightMotor.setIdleMode(IdleMode.kBrake);
     backRightMotor.setIdleMode(IdleMode.kBrake);
   }
+
   public void resetEncoders() {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
   }
-  
+
   public void drive(double forward, double rotate) {
     difDrive.arcadeDrive(forward, rotate);
   }
-
-  public void runMotor(){
+  public void nullRampRates(){
+    backLeftMotor.setOpenLoopRampRate(0);
+    frontLeftMotor.setOpenLoopRampRate(0);
+    backRightMotor.setOpenLoopRampRate(0);
+    frontRightMotor.setOpenLoopRampRate(0);
+  }
+  public void runMotor() {
     frontLeftMotor.set(.3);
   }
+
   public double getRightEncoderPosition() {
     return rightEncoder.getPosition();
   }
@@ -175,29 +208,96 @@ public CANSparkMax frontLeftMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_LEFT
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
+
   public void resetPose(Pose2d pose) {
     resetEncoders();
-    m_odometry.resetPosition(navX.getRotation2d(),new DifferentialDriveWheelPositions(getLeftEncoderPosition(), getRightEncoderPosition()),pose);
+    m_odometry.resetPosition(navX.getRotation2d(),
+        new DifferentialDriveWheelPositions(getLeftEncoderPosition(), getRightEncoderPosition()), pose);
   }
 
-  public void updateAutoParameters(){
+  public void updateAutoParameters() {
     wheelSpeeds.leftMetersPerSecond = LeftWheelSpeeds.get();
     wheelSpeeds.rightMetersPerSecond = RightWheelSpeeds.get();
     m_ChassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
     m_odometry.update(navX.getRotation2d(), getLeftEncoderPosition(),
-        getRightEncoderPosition());  
-      
-  }
+        getRightEncoderPosition());
 
+  }
 
   public DifferentialDriveOdometry getOdometry() {
     return m_odometry;
   }
 
+  public void setCurrentLimits(int limit) {
+    frontLeftMotor.setSmartCurrentLimit(limit);
+    frontRightMotor.setSmartCurrentLimit(limit);
+    backLeftMotor.setSmartCurrentLimit(limit);
+    backRightMotor.setSmartCurrentLimit(limit);
+  }
+
+PIDController speedDriveController = new PIDController(.01, .01, .01);
+int maxWheelSpeed =100;
+double speed;
+  public void speedDrive(double input, double turn){
+    double percent;
+    //set left
+    if(input-turn>1)
+      percent=1;
+    else if (input-turn<-1)
+      percent =-1;
+    else
+    percent = input - turn;
+speedDriveController.setSetpoint((percent)*maxWheelSpeed);
+speed = speedDriveController.calculate(getLeftWheel());
+frontLeftMotor.set(speed);
+backLeftMotor.set(speed);
+//set right
+if(input+turn>1)
+      percent=1;
+    else if (input+turn<-1)
+      percent =-1;
+    else
+    percent = input + turn;
+speedDriveController.setSetpoint((input+percent)*maxWheelSpeed);
+speed = speedDriveController.calculate(getRightWheel());
+frontRightMotor.set(speed);
+backRightMotor.set(speed);
+
+  }
+
+  LookUpTableCurrentLimits leftLimitTable = new LookUpTableCurrentLimits();
+  LookUpTableCurrentLimits rightLimitTable = new LookUpTableCurrentLimits();
+  LookUpTableCurrentLimits angleLimitTable = new LookUpTableCurrentLimits();
+  double previousLeftSpeed = getLeftWheel();
+  double previousRightSpeed = getRightWheel();
+  public void adjustCurrentLimit() {
+    if((getRightWheel()-previousRightSpeed)/getRightWheel()>0.02){
+      rightLimitTable.accelerateTable();
+    }
+    else if((getRightWheel()-previousRightSpeed)/getRightWheel()<-0.02){
+      rightLimitTable.decelerateTable();
+    }
+    if((getLeftWheel()-previousRightSpeed)/getLeftWheel()>0.02){
+      leftLimitTable.accelerateTable();
+    }
+    else if((getLeftWheel()-previousRightSpeed)/getLeftWheel()<-0.02){
+      leftLimitTable.decelerateTable();
+    }
+    frontLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
+        - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
+      backLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
+        - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
+    frontRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
+        - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
+    backRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
+        - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
+      }
+
   @Override
   public void periodic() {
-    
-
+    if(driverControlled){
+    adjustCurrentLimit();
+    }
     SmartDashboard.putNumber("OmegaRadiansPerSecond", m_ChassisSpeeds.omegaRadiansPerSecond);
     SmartDashboard.putNumber("Gyro Rotation", navX.getRotation2d().getDegrees());
     SmartDashboard.putNumber("Translational Data", m_pose.getY());
@@ -216,7 +316,7 @@ public CANSparkMax frontLeftMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_LEFT
     SmartDashboard.putNumber("Gyro Yaw", getGyroYaw());
     SmartDashboard.putNumber("Turn Rate", getTurnRate());
 
-    // This method will be called once per scheduler 
+    // This method will be called once per scheduler
   }
 
   @Override

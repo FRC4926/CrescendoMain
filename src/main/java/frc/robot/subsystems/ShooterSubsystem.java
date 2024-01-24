@@ -22,19 +22,21 @@ public class ShooterSubsystem extends SubsystemBase {
 
     frontRight.restoreFactoryDefaults();
     frontLeft.restoreFactoryDefaults();
-  
+    frontRight.setSmartCurrentLimit(50);
+    frontLeft.setSmartCurrentLimit(50);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  public void drive(double moveLeft, double moveRight){
+  public void shoot(double moveLeft, double moveRight){
       frontLeft.set(moveLeft);
       frontRight.set(moveRight);
 
   }
-  public double getShooterAngle(){
-    return (Math.atan((Constants.FieldConstant.speakerTagHeight-Constants.RobotParameters.cameraHeight)/RobotContainer.Subsystems.m_limelightSubsystem.calcHorizontalDistance()));
+  public double getCurrentAngle(){
+    return 0;
   }
+
 }
