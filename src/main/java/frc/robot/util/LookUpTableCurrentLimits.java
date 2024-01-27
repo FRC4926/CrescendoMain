@@ -1,17 +1,29 @@
 package frc.robot.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class LookUpTableCurrentLimits {
-    ArrayList<Integer> speeds = new ArrayList<Integer>();    
+    ArrayList<Double> speeds = new ArrayList<Double>();    
     ArrayList<Integer> limits = new ArrayList<Integer>();    
     ArrayList<Integer> decelerateLimits = new ArrayList<Integer>();
     ArrayList<Integer> accelerateLimits = new ArrayList<Integer>();
 
     public LookUpTableCurrentLimits(){
-        speeds.add(0);
-        
+        speeds.add(0.417576);
+        speeds.add(0.730758);
+        speeds.add(1.04394);
+        speeds.add(1.357122);
+        speeds.add(1.670304);
+        speeds.add(1.983486);
+        speeds.add(2.296668);
+        speeds.add(2.60985);
+        speeds.add(2.923032);
+        speeds.add(3.236214);
+        speeds.add(3.549396);
+        speeds.add(4.17576);
+
+
+
         
         accelerateLimits.add(30);
         accelerateLimits.add(32);

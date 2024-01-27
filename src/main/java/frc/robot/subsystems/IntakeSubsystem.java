@@ -11,25 +11,26 @@ import frc.robot.RobotContainer;
 
 public class IntakeSubsystem extends SubsystemBase {
   public DigitalInput input = new DigitalInput(Constants.CAN_IDS.COLOR_ID);
-  public CANSparkMax frontLeft = new CANSparkMax(Constants.CAN_IDS.TOP_INTAKE, MotorType.kBrushless);
-  public CANSparkMax frontRight = new CANSparkMax(Constants.CAN_IDS.BOTTOM_INTAKE, MotorType.kBrushless);
-
+  public CANSparkMax conveyor = new CANSparkMax(Constants.CAN_IDS.CONVEYOR, MotorType.kBrushless);
+  public CANSparkMax intake = new CANSparkMax(Constants.CAN_IDS.INTAKE, MotorType.kBrushless);
   public IntakeSubsystem() {
 
   }
 
   public void intake() {
     if (!input.get()) {
-      frontLeft.set(0.3);
-      frontRight.set(0.3);
+      conveyor.set(0.3);
+      intake.set(0.3);
+      RobotContainer.Subsystems.m_shooterSubsystem.shoot(-.1,-.1);
     } else {
       stop();
     }
   }
 
   public void stop() {
-    frontLeft.set(0);
-    frontRight.set(0);
+    conveyor.set(0);
+    intake.set(0);
+    RobotContainer.Subsystems.m_shooterSubsystem.shoot(0,0);
   }
 
   public void displaySensor() {

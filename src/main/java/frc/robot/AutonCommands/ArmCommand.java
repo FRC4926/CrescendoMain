@@ -2,37 +2,38 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.AutonCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
-public class IntakeCommand extends Command {
-  /** Creates a new IntakeCommand. */
-  public IntakeCommand() {
+public class ArmCommand extends Command {
+  boolean manualControl = false;
+
+  /** Creates a new ArmCommand. */
+  public ArmCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(RobotContainer.Controllers.m_operatorController.a().getAsBoolean()){
-        RobotContainer.Subsystems.m_intakeSubsystem.intake();
-    }
+      RobotContainer.Subsystems.m_armSubsystem.adjustArmShooterAngle();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return RobotContainer.Subsystems.m_armSubsystem.armController.getPositionError()<2 && RobotContainer.Subsystems.m_armSubsystem.armMotor1.getEncoder().getVelocity()<5;
   }
 }

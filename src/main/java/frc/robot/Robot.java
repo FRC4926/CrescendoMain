@@ -81,10 +81,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    // Subsystems.m_driveSubsystem.resetEncoders();
-    // Subsystems.m_driveSubsystem.resetGyro();
+    Subsystems.m_driveSubsystem.resetEncoders();
+    Subsystems.m_driveSubsystem.resetGyro();
     // Subsystems.m_driveSubsystem.driverControlled = true;
     // Subsystems.m_driveSubsystem.nullRampRates();
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -92,17 +93,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    // CommandScheduler.getInstance().schedule(new DriveCommand());
-    CommandScheduler.getInstance().schedule(RobotContainer.Commands.m_intakeCommand);
-
+    //Drives Robot
+    CommandScheduler.getInstance().schedule(new DriveCommand());
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // Subsystems.m_driveSubsystem.runMotor();
-
   }
 
   @Override

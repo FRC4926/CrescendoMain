@@ -18,8 +18,8 @@ public class ArmSubsystem extends SubsystemBase {
   double p = 0.01;
   double i = 0;
   double d = 0;
-  public CANSparkMax armMotor1 = new CANSparkMax(Constants.CAN_IDS.SHOULDER1, MotorType.kBrushless);
-  public CANSparkMax armMotor2 = new CANSparkMax(Constants.CAN_IDS.SHOULDER1, MotorType.kBrushless);
+  public CANSparkMax armMotor1 = new CANSparkMax(Constants.CAN_IDS.ARM_LEFT, MotorType.kBrushless);
+  public CANSparkMax armMotor2 = new CANSparkMax(Constants.CAN_IDS.ARM_RIGHT, MotorType.kBrushless);
   public double angle = armMotor1.getEncoder().getPosition() + Constants.RobotParameters.wristAngle;
   public PIDController armController = new PIDController(p, i, d);
   private LookUpTableShooterAngles angles = new LookUpTableShooterAngles();
@@ -32,7 +32,10 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getArmDesiredAngle() {
+        if(RobotContainer.Subsystems.m_limelightSubsystem.id== 7 || RobotContainer.Subsystems.m_limelightSubsystem.id== 7 )
     return (angles.lookUpAngle(RobotContainer.Subsystems.m_limelightSubsystem.calcHorizontalDistance()));
+    else
+    return Constants.RobotParameters.ampAngle;
   }
 
   public double getArmActualAngle() {
@@ -46,7 +49,8 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void goToHome() {
-    armController.setSetpoint(Constants.RobotParameters.initialShoulderAngle + Constants.RobotParameters.wristAngle);
+    armController.setSetpoint(Constants.RobotParameters.initialShoulderAngle + 
+    Constants.RobotParameters.wristAngle);
     armMotor1.set(armController.calculate(getArmActualAngle()));
   }
 

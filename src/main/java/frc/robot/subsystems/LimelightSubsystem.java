@@ -71,11 +71,12 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public double calcHorizontalDistance() {
 
-    double pitch = Math.toRadians(Constants.RobotParameters.cameraAngle);
+    double pitch = Math
+        .toRadians(Constants.RobotParameters.cameraAngle +
+            RobotContainer.Subsystems.m_driveSubsystem.getGyroPitch());
     // target height - camera height
     double dh = Constants.FieldConstant.speakerTagHeight - Constants.RobotParameters.cameraHeight;
-
-    return dh / Math.tan(Math.toRadians(y+pitch));
+    return dh / Math.tan(Math.toRadians(y + pitch));
   }
 
   @Override

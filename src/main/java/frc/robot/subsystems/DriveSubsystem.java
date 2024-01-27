@@ -7,9 +7,9 @@ package frc.robot.subsystems;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -27,7 +27,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,10 +36,10 @@ import frc.robot.util.LookUpTableCurrentLimits;
 
 public class DriveSubsystem extends SubsystemBase {
   public com.kauailabs.navx.frc.AHRS navX = new AHRS(Port.kMXP);
-  public CANSparkMax frontLeftMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_LEFT, MotorType.kBrushless);
-  public CANSparkMax backLeftMotor = new CANSparkMax(Constants.CAN_IDS.BACK_LEFT, MotorType.kBrushless);
-  public CANSparkMax frontRightMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_RIGHT, MotorType.kBrushless);
-  public CANSparkMax backRightMotor = new CANSparkMax(Constants.CAN_IDS.BACK_RIGHT, MotorType.kBrushless);
+  public CANSparkMax frontLeftMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+  public CANSparkMax backLeftMotor = new CANSparkMax(Constants.CAN_IDS.BACK_LEFT_DRIVE, MotorType.kBrushless);
+  public CANSparkMax frontRightMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_RIGHT_DRIVE, MotorType.kBrushless);
+  public CANSparkMax backRightMotor = new CANSparkMax(Constants.CAN_IDS.BACK_RIGHT_DRIVE, MotorType.kBrushless);
   public RelativeEncoder leftEncoder = frontLeftMotor.getEncoder();
   public RelativeEncoder rightEncoder = frontRightMotor.getEncoder();
   public DifferentialDrive difDrive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
@@ -58,30 +57,8 @@ public class DriveSubsystem extends SubsystemBase {
       navX.getRotation2d());
 
   private DifferentialDriveOdometry m_odometry;
-  // void resetPose(){
-  // m_odometry.resetPosition(gyro.getRotation2d(),frontLeftEncoder.getPosition()*Math.PI
-  // * Constants.RobotParameters.wheelDiameter /
-  // Constants.RobotParameters.gearRatio,frontRightEncoder.getPosition()*Math.PI *
-  // Constants.RobotParameters.wheelDiameter /
-  // Constants.RobotParameters.gearRatio,new Pose2d(0, getGyroPitch(),
-  // getRotation2D()));
-  // }
-
   public BooleanSupplier flipPath = () -> false;
   public Consumer<ChassisSpeeds> drive = a -> difDrive.arcadeDrive(a.vxMetersPerSecond, a.omegaRadiansPerSecond);
-  // public Consumer<Pose2d> resetPose = a ->
-  // m_odometry.resetPosition(navX.getRotation2d(),leftEncoder.getPosition()*Math.PI
-  // * Constants.RobotParameters.kWheelRadiusInches /
-  // Constants.RobotParameters.gearRatio,
-  // rightEncoder.getPosition()*Math.PI *
-  // Constants.RobotParameters.kWheelRadiusInches /
-  // Constants.RobotParameters.kGearRatio, new Pose2d(0,0,new Rotation2d()));
-  // public Supplier<Pose2d> pose = () -> m_pose;
-  // public Supplier<ChassisSpeeds> chassSpeedSupplier = () -> m_ChassisSpeeds;
-  // public Consumer<ChassisSpeeds> chassisSpeedConsumer = a ->
-  // updateChassisSpeeds(a);
-  // motor groups
-
   public Rotation2d getRotation2d() {
     return navX.getRotation2d();
   }
@@ -110,6 +87,9 @@ public class DriveSubsystem extends SubsystemBase {
     // 0.31 is offset
     return navX.getPitch() % 360;
   }
+  public double getGyro(){
+    return navX.getRoll();
+  }
 
   private final Field2d field;
 
@@ -133,8 +113,6 @@ public class DriveSubsystem extends SubsystemBase {
     backRightMotor.follow(frontRightMotor);
     frontRightMotor.setInverted(true);
     backRightMotor.setInverted(true);
-
-
 
     navX.reset();
     resetEncoders();
@@ -179,12 +157,14 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double forward, double rotate) {
     difDrive.arcadeDrive(forward, rotate);
   }
-  public void nullRampRates(){
+
+  public void nullRampRates() {
     backLeftMotor.setOpenLoopRampRate(0);
     frontLeftMotor.setOpenLoopRampRate(0);
     backRightMotor.setOpenLoopRampRate(0);
     frontRightMotor.setOpenLoopRampRate(0);
   }
+
   public void runMotor() {
     frontLeftMotor.set(.3);
   }
@@ -235,33 +215,60 @@ public class DriveSubsystem extends SubsystemBase {
     backRightMotor.setSmartCurrentLimit(limit);
   }
 
-PIDController speedDriveController = new PIDController(.01, .01, .01);
-int maxWheelSpeed =100;
-double speed;
-  public void speedDrive(double input, double turn){
+  PIDController speedDriveController = new PIDController(.01, .01, .01);
+  double maxWheelSpeed = 4.17576;
+  double speed;
+
+  public void speedDrive(double input, double turn) {
     double percent;
-    //set left
-    if(input-turn>1)
-      percent=1;
-    else if (input-turn<-1)
-      percent =-1;
+    // set left
+    if (input - turn > 1)
+      percent = 1;
+    else if (input - turn < -1)
+      percent = -1;
     else
     percent = input - turn;
-speedDriveController.setSetpoint((percent)*maxWheelSpeed);
-speed = speedDriveController.calculate(getLeftWheel());
-frontLeftMotor.set(speed);
-backLeftMotor.set(speed);
-//set right
-if(input+turn>1)
-      percent=1;
-    else if (input+turn<-1)
-      percent =-1;
+    speedDriveController.setSetpoint((percent) * maxWheelSpeed);
+    speed = speedDriveController.calculate(getLeftWheel());
+    frontLeftMotor.set(speed);
+    backLeftMotor.set(speed);
+    // set right
+    if (input + turn > 1)
+      percent = 1;
+    else if (input + turn < -1)
+      percent = -1;
     else
-    percent = input + turn;
-speedDriveController.setSetpoint((input+percent)*maxWheelSpeed);
-speed = speedDriveController.calculate(getRightWheel());
-frontRightMotor.set(speed);
-backRightMotor.set(speed);
+      percent = input + turn;
+    speedDriveController.setSetpoint((input + percent) * maxWheelSpeed);
+    speed = speedDriveController.calculate(getRightWheel());
+    frontRightMotor.set(speed);
+    backRightMotor.set(speed);
+
+  }
+  public void speedDriveSlowRampUp(double input, double turn) {
+    double percent;
+    // set left
+    if (input - turn > 1)
+      percent = 1;
+    else if (input - turn < -1)
+      percent = -1;
+    else
+    percent = input - turn;
+    speedDriveController.setSetpoint((percent) * maxWheelSpeed);
+    speed = speedDriveController.calculate(getLeftWheel());
+    frontLeftMotor.set(speed);
+    backLeftMotor.set(speed);
+    // set right
+    if (input + turn > 1)
+      percent = 1;
+    else if (input + turn < -1)
+      percent = -1;
+    else
+      percent = input + turn;
+    speedDriveController.setSetpoint((input + percent) * maxWheelSpeed);
+    speed = speedDriveController.calculate(getRightWheel());
+    frontRightMotor.set(speed);
+    backRightMotor.set(speed);
 
   }
 
@@ -270,34 +277,34 @@ backRightMotor.set(speed);
   LookUpTableCurrentLimits angleLimitTable = new LookUpTableCurrentLimits();
   double previousLeftSpeed = getLeftWheel();
   double previousRightSpeed = getRightWheel();
+
   public void adjustCurrentLimit() {
-    if((getRightWheel()-previousRightSpeed)/getRightWheel()>0.02){
+    if ((getRightWheel() - previousRightSpeed) / getRightWheel() > 0.02) {
       rightLimitTable.accelerateTable();
-    }
-    else if((getRightWheel()-previousRightSpeed)/getRightWheel()<-0.02){
+    } else if ((getRightWheel() - previousRightSpeed) / getRightWheel() < -0.02) {
       rightLimitTable.decelerateTable();
     }
-    if((getLeftWheel()-previousRightSpeed)/getLeftWheel()>0.02){
+    if ((getLeftWheel() - previousRightSpeed) / getLeftWheel() > 0.02) {
       leftLimitTable.accelerateTable();
-    }
-    else if((getLeftWheel()-previousRightSpeed)/getLeftWheel()<-0.02){
+    } else if ((getLeftWheel() - previousRightSpeed) / getLeftWheel() < -0.02) {
       leftLimitTable.decelerateTable();
     }
     frontLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
         - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-      backLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
+    backLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
         - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
     frontRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
         - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
     backRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
         - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-      }
+  }
 
   @Override
   public void periodic() {
-    if(driverControlled){
-    adjustCurrentLimit();
-    }
+    // if (driverControlled) {
+    //   adjustCurrentLimit();
+    // }
+    
     SmartDashboard.putNumber("OmegaRadiansPerSecond", m_ChassisSpeeds.omegaRadiansPerSecond);
     SmartDashboard.putNumber("Gyro Rotation", navX.getRotation2d().getDegrees());
     SmartDashboard.putNumber("Translational Data", m_pose.getY());
@@ -310,9 +317,7 @@ backRightMotor.set(speed);
     SmartDashboard.putNumber("frontRightEncoder", getRightEncoderPosition());
 
     SmartDashboard.putNumber("backRightEncoder", getRightEncoderPosition());
-
     SmartDashboard.putNumber("Average Distance", getAverageEncoderDistance());
-
     SmartDashboard.putNumber("Gyro Yaw", getGyroYaw());
     SmartDashboard.putNumber("Turn Rate", getTurnRate());
 

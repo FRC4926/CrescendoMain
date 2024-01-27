@@ -21,15 +21,16 @@ public final class Constants {
     public static final double startingY=2;
  }
   public static class CAN_IDS {
-    public static final int FRONT_LEFT = 1;
-    public static final int BACK_LEFT = 2;
-    public static final int FRONT_RIGHT = 3;
-    public static final int BACK_RIGHT = 4;
-    public static final int TOP_SHOOTER = 5;
-    public static final int BOTTOM_SHOOTER =6;
-    public static final int TOP_INTAKE = 7;
-    public static final int BOTTOM_INTAKE =8;
-    public static final int SHOULDER1 = 9;
+    public static final int FRONT_LEFT_DRIVE = 1;
+    public static final int BACK_LEFT_DRIVE = 2;
+    public static final int FRONT_RIGHT_DRIVE = 3;
+    public static final int BACK_RIGHT_DRIVE = 4;
+    public static final int CONVEYOR = 5;
+    public static final int INTAKE =6;
+    public static final int TOP_SHOOTER = 7;
+    public static final int BOTTOM_SHOOTER =8;
+    public static final int ARM_LEFT = 9;
+    public static final int ARM_RIGHT = 10;
 
     public static final int COLOR_ID = 7;
     
@@ -53,6 +54,7 @@ public class FieldConstant{
     public final static double initialShoulderAngle = 909;
     public final static double wristAngle = 909; 
     public final static double shoulderGearRation = 1/156;
+    public final static double ampAngle = 909;
 }
     
   }

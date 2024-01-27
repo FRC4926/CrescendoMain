@@ -41,17 +41,19 @@ public class RobotContainer {
     public final static IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     public final static ArmSubsystem m_armSubsystem = new ArmSubsystem();
   }
+  //The Commands are stored here
   public static class Commands{
   public final static ShooterCommand m_shooterCommand = new ShooterCommand();
   public final static DriveCommand m_DriveCommand = new DriveCommand();
   public final static AprilTagAlignment m_alignment = new AprilTagAlignment();
   public final static IntakeCommand m_intakeCommand = new IntakeCommand();
   }
-
+//our controllers are stored here
   public static class Controllers {
-    // Replace with CommandPS4Controller or CommandJoystick if needed
+    //Driver
     public static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    //Operator
       public static CommandXboxController m_operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   }
 
@@ -86,15 +88,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //     try{
-    //   return new PathPlannerAuto("TestAuto");
-    // }catch(Exception e){
-    //  return null;
-    // }
+
     PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
 
       return AutoBuilder.followPath(path);
-    // An example command wi  ll be run in autonomous
-    //return Autos.exampleAuto(m_exampleSubsystem);
   }
 }
