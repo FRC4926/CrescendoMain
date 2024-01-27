@@ -5,6 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -28,6 +32,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  DoubleLogEntry rpmLog;
+  DoubleLogEntry currentLog;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -39,6 +46,11 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    DataLogManager.start();
+    DataLog log = DataLogManager.getLog();
+    rpmLog = new DoubleLogEntry(log, "RPM");
+    currentLog = new DoubleLogEntry(log, "Current");
   }
 
   /**
@@ -81,6 +93,7 @@ public class Robot extends TimedRobot {
     // Subsystems.driveSubsystem.setCurrentLimits(60);
     Subsystems.m_driveSubsystem.resetGyro();
     Subsystems.m_driveSubsystem.resetEncoders();
+    Subsystems.m_driveSubsystem.setBrakeMode();
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -111,20 +124,28 @@ public class Robot extends TimedRobot {
 
     Subsystems.m_driveSubsystem.resetEncoders();
     Subsystems.m_driveSubsystem.resetGyro();
+    // Subsystems.m_driveSubsystem.nullRampRates();
+    Subsystems.m_driveSubsystem.setBrakeMode();
 
     // Drives Robot
-    CommandScheduler.getInstance().schedule(Commands.m_DriveCommand);
+    // CommandScheduler.getInstance().schedule(Commands.m_driveCommand);
+
+    CommandScheduler.getInstance().schedule(Commands.m_alignmentCommand);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    // rpmLog.append(Subsystems.m_driveSubsystem.getAverageRPM());
+    // currentLog.append(Subsystems.m_driveSubsystem.getAverageCurrent());
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    Subsystems.m_driveSubsystem.setCoastMode();
   }
 
   /** This function is called periodically during test mode. */

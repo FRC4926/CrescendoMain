@@ -47,8 +47,8 @@ public class RobotContainer {
   // The Commands are stored here
   public static class Commands {
     public final static ShooterCommand m_shooterCommand = new ShooterCommand();
-    public final static DriveCommand m_DriveCommand = new DriveCommand();
-    public final static AprilTagAlignment m_alignment = new AprilTagAlignment();
+    public final static DriveCommand m_driveCommand = new DriveCommand();
+    public final static AprilTagAlignment m_alignmentCommand = new AprilTagAlignment();
     public final static IntakeCommand m_intakeCommand = new IntakeCommand();
   }
 

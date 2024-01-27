@@ -29,10 +29,12 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
@@ -48,10 +50,10 @@ public class DriveSubsystem extends SubsystemBase {
   public CANSparkMax backLeftMotor = new CANSparkMax(Constants.CAN_IDS.BACK_LEFT_DRIVE, MotorType.kBrushless);
   public CANSparkMax frontRightMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_RIGHT_DRIVE, MotorType.kBrushless);
   public CANSparkMax backRightMotor = new CANSparkMax(Constants.CAN_IDS.BACK_RIGHT_DRIVE, MotorType.kBrushless);
-  
+
   public RelativeEncoder leftEncoder = frontLeftMotor.getEncoder();
   public RelativeEncoder rightEncoder = frontRightMotor.getEncoder();
-  
+
   public DifferentialDrive difDrive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
   Pose2d m_pose = new Pose2d(0, 0, navX.getRotation2d());
   public DifferentialDriveOdometry m_odometry;
@@ -80,12 +82,13 @@ public class DriveSubsystem extends SubsystemBase {
     // 0.31 is offset
     return navX.getPitch() % 360;
   }
-  public double getGyroRoll(){
+
+  public double getGyroRoll() {
     return navX.getRoll();
   }
 
   /** Creates a new ExampleSubsystem. */
-  public DriveSubsystem() { 
+  public DriveSubsystem() {
     frontLeftMotor.restoreFactoryDefaults();
     backLeftMotor.restoreFactoryDefaults();
     frontRightMotor.restoreFactoryDefaults();
@@ -104,8 +107,8 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightMotor.setInverted(true);
     backRightMotor.setInverted(true);
 
-    frontLeftMotor.enableVoltageCompensation(10);
-    frontRightMotor.enableVoltageCompensation(10);
+    // frontLeftMotor.enableVoltageCompensation(10);
+    // frontRightMotor.enableVoltageCompensation(10);
 
     navX.reset();
     resetEncoders();
@@ -134,6 +137,13 @@ public class DriveSubsystem extends SubsystemBase {
     backRightMotor.setIdleMode(IdleMode.kBrake);
   }
 
+  public void setCoastMode() {
+    backLeftMotor.setIdleMode(IdleMode.kCoast);
+    frontLeftMotor.setIdleMode(IdleMode.kCoast);
+    frontRightMotor.setIdleMode(IdleMode.kCoast);
+    backRightMotor.setIdleMode(IdleMode.kCoast);
+  }
+
   public void resetEncoders() {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
@@ -149,7 +159,7 @@ public class DriveSubsystem extends SubsystemBase {
     backRightMotor.setOpenLoopRampRate(0);
     frontRightMotor.setOpenLoopRampRate(0);
   }
-  
+
   public double getRightEncoderPosition() {
     return rightEncoder.getPosition();
   }
@@ -199,7 +209,7 @@ public class DriveSubsystem extends SubsystemBase {
     else if (input - turn < -1)
       percent = -1;
     else
-    percent = input - turn;
+      percent = input - turn;
     speedDriveController.setSetpoint((percent) * maxWheelSpeed);
     speed = speedDriveController.calculate(getLeftWheel());
     frontLeftMotor.set(speed);
@@ -217,6 +227,7 @@ public class DriveSubsystem extends SubsystemBase {
     backRightMotor.set(speed);
 
   }
+
   public void speedDriveSlowRampUp(double input, double turn) {
     double percent;
     // set left
@@ -225,7 +236,7 @@ public class DriveSubsystem extends SubsystemBase {
     else if (input - turn < -1)
       percent = -1;
     else
-    percent = input - turn;
+      percent = input - turn;
     speedDriveController.setSetpoint((percent) * maxWheelSpeed);
     speed = speedDriveController.calculate(getLeftWheel());
     frontLeftMotor.set(speed);
@@ -277,23 +288,33 @@ public class DriveSubsystem extends SubsystemBase {
     difDrive.feed();
   }
 
+  public double getAverageRPM() {
+    return (Math.abs(getLeftWheel()) + Math.abs(getRightWheel())) * 30
+        / Constants.Robot.kLinearDistanceConversionFactor;
+  }
+
+  public double getAverageCurrent() {
+    return (frontLeftMotor.getOutputCurrent() + frontRightMotor.getOutputCurrent()) / 2;
+  }
+
   @Override
   public void periodic() {
     // if (driverControlled) {
-    //   adjustCurrentLimit();
+    // adjustCurrentLimit();
     // }
 
     m_odometry.update(navX.getRotation2d(), getLeftEncoderPosition(),
-    getRightEncoderPosition());
-    
+        getRightEncoderPosition());
+
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("frontLeftEncoder", getLeftEncoderPosition());
-
     SmartDashboard.putNumber("backLeftEncoder", getLeftEncoderPosition());
-
     SmartDashboard.putNumber("frontRightEncoder", getRightEncoderPosition());
-
     SmartDashboard.putNumber("backRightEncoder", getRightEncoderPosition());
+
+    SmartDashboard.putNumber("average RPM", getAverageRPM());
+    SmartDashboard.putNumber("current", frontLeftMotor.getOutputCurrent());
+
     SmartDashboard.putNumber("Average Distance", getAverageEncoderDistance());
     SmartDashboard.putNumber("Gyro Yaw", getGyroYaw());
     SmartDashboard.putNumber("Turn Rate", getTurnRate());
@@ -316,7 +337,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public RamseteCommand getRamseteCommand(Trajectory trajectory) {
 
-     
     RamseteCommand ramseteCommand = new RamseteCommand(
         trajectory,
         Subsystems.m_driveSubsystem::getPose,
@@ -335,7 +355,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     return ramseteCommand;
   }
-
 
   @Override
   public void simulationPeriodic() {

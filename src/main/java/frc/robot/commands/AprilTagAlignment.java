@@ -9,17 +9,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
+import frc.robot.util.GalacPIDController;
 
 public class AprilTagAlignment extends Command {
   double turnEffort;
   double driveEffort;
-  PIDController alignPidController = new PIDController(0.05, 0, 0);
+  GalacPIDController alignPidController = new GalacPIDController(0.01, 0.018, 0, 0.1, () -> RobotContainer.Subsystems.m_limelightSubsystem.getX(), 0, 0.1);
 
   /** Creates a new AprilTagAlignmentCommand. */
   public AprilTagAlignment() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.Subsystems.m_limelightSubsystem);
-    alignPidController.setSetpoint(0);
+    // addRequirements(RobotContainer.Subsystems.m_limelightSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -31,9 +31,14 @@ public class AprilTagAlignment extends Command {
   @Override
   public void execute() {
     RobotContainer.Subsystems.m_limelightSubsystem.runLime();
-    turnEffort = alignPidController.calculate(RobotContainer.Subsystems.m_limelightSubsystem.getX());
-    if (RobotContainer.Controllers.m_driverController.a().getAsBoolean())
-      RobotContainer.Subsystems.m_driveSubsystem.drive(0, -turnEffort);    
+
+    if (RobotContainer.Controllers.m_driverController.a().getAsBoolean()) {
+      turnEffort = alignPidController.getEffort();
+
+      SmartDashboard.putNumber("Turn Effort", turnEffort);
+
+      RobotContainer.Subsystems.m_driveSubsystem.drive(0, turnEffort);
+    }
   }
 
   // Called once the command ends or is interrupted.
