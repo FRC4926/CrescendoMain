@@ -13,17 +13,17 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class ShooterSubsystem extends SubsystemBase {
- public CANSparkMax frontLeft = new CANSparkMax(6, MotorType.kBrushless);
- public CANSparkMax frontRight = new CANSparkMax(5, MotorType.kBrushless);
+ public CANSparkMax bottom = new CANSparkMax(Constants.CAN_IDS.SHOOTER_BOTTOM, MotorType.kBrushless);
+ public CANSparkMax top = new CANSparkMax(Constants.CAN_IDS.SHOOTER_TOP, MotorType.kBrushless);
 
 
   /** Creates a new DriveSubsystem. */
   public ShooterSubsystem() {
 
-    frontRight.restoreFactoryDefaults();
-    frontLeft.restoreFactoryDefaults();
-    frontRight.setSmartCurrentLimit(50);
-    frontLeft.setSmartCurrentLimit(50);
+    top.restoreFactoryDefaults();
+    bottom.restoreFactoryDefaults();
+    top.setSmartCurrentLimit(50);
+    bottom.setSmartCurrentLimit(50);
   }
 
   @Override
@@ -31,8 +31,8 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   public void shoot(double moveLeft, double moveRight){
-      frontLeft.set(moveLeft);
-      frontRight.set(moveRight);
+      bottom.set(moveLeft);
+      top.set(moveRight);
 
   }
   public double getCurrentAngle(){

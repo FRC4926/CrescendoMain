@@ -20,27 +20,27 @@ public class ArmSubsystem extends SubsystemBase {
   double d = 0;
   public CANSparkMax armMotor1 = new CANSparkMax(Constants.CAN_IDS.ARM_LEFT, MotorType.kBrushless);
   public CANSparkMax armMotor2 = new CANSparkMax(Constants.CAN_IDS.ARM_RIGHT, MotorType.kBrushless);
-  public double angle = armMotor1.getEncoder().getPosition() + Constants.RobotParameters.wristAngle;
+  public double angle = armMotor1.getEncoder().getPosition() + Constants.Robot.wristAngle;
   public PIDController armController = new PIDController(p, i, d);
   private LookUpTableShooterAngles angles = new LookUpTableShooterAngles();
 
   public ArmSubsystem() {
     armMotor1.restoreFactoryDefaults();
-    armMotor1.getEncoder().setPosition(Constants.RobotParameters.initialShoulderAngle / 360);
+    armMotor1.getEncoder().setPosition(Constants.Robot.initialShoulderAngle / 360);
     armMotor2.restoreFactoryDefaults();
-    armMotor2.getEncoder().setPosition(Constants.RobotParameters.initialShoulderAngle / 360);
+    armMotor2.getEncoder().setPosition(Constants.Robot.initialShoulderAngle / 360);
   }
 
   public double getArmDesiredAngle() {
         if(RobotContainer.Subsystems.m_limelightSubsystem.id== 7 || RobotContainer.Subsystems.m_limelightSubsystem.id== 7 )
     return (angles.lookUpAngle(RobotContainer.Subsystems.m_limelightSubsystem.calcHorizontalDistance()));
     else
-    return Constants.RobotParameters.ampAngle;
+    return Constants.Robot.ampAngle;
   }
 
   public double getArmActualAngle() {
     return (armMotor1.getEncoder().getPosition() + armMotor1.getEncoder().getPosition()) / (4 * Math.PI)
-        * Constants.RobotParameters.shoulderGearRation + Constants.RobotParameters.wristAngle;
+        * Constants.Robot.shoulderGearRation + Constants.Robot.wristAngle;
   }
 
   public void adjustArmShooterAngle() {
@@ -49,8 +49,8 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void goToHome() {
-    armController.setSetpoint(Constants.RobotParameters.initialShoulderAngle + 
-    Constants.RobotParameters.wristAngle);
+    armController.setSetpoint(Constants.Robot.initialShoulderAngle + 
+    Constants.Robot.wristAngle);
     armMotor1.set(armController.calculate(getArmActualAngle()));
   }
 
