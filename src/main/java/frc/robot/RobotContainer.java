@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.Controller;
 import frc.robot.autonmodes.Center2Note;
-import frc.robot.commands.AprilTagAlignment;
+import frc.robot.commands.VisionCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
@@ -48,7 +48,7 @@ public class RobotContainer {
   public static class Commands {
     public final static ShooterCommand m_shooterCommand = new ShooterCommand();
     public final static DriveCommand m_driveCommand = new DriveCommand();
-    public final static AprilTagAlignment m_alignmentCommand = new AprilTagAlignment();
+    public final static VisionCommand m_alignmentCommand = new VisionCommand();
     public final static IntakeCommand m_intakeCommand = new IntakeCommand();
   }
 

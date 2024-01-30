@@ -2,21 +2,22 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.autoncommands;
+package frc.robot.commands.autoncommands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.Subsystems;
+import frc.robot.util.GalacPIDController;
 
-public class AprilTagAlignment extends Command {
+public class AutonVisionCommand extends Command {
   double turnEffort;
   double driveEffort;
-  PIDController alignPidController = new PIDController(0.05, 0, 0);
-
+  GalacPIDController alignPidController = new GalacPIDController(0.015, .01, 0, 0.1, () -> RobotContainer.Subsystems.m_limelightSubsystem.getX(), 0, 2);
   /** Creates a new AprilTagAlignmentCommand. */
-  public AprilTagAlignment() {
+  public AutonVisionCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.Subsystems.m_limelightSubsystem);
     alignPidController.setSetpoint(0);
@@ -30,9 +31,9 @@ public class AprilTagAlignment extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.Subsystems.m_limelightSubsystem.runLime();
-    turnEffort = alignPidController.calculate(RobotContainer.Subsystems.m_limelightSubsystem.getX());
-      RobotContainer.Subsystems.m_driveSubsystem.drive(0, -turnEffort);
+    RobotContainer.Subsystems.m_limelightSubsystem.updateLimelight();
+    turnEffort = alignPidController.getEffort();
+      RobotContainer.Subsystems.m_driveSubsystem.drive(0, turnEffort);
     }    
   
 
@@ -44,6 +45,6 @@ public class AprilTagAlignment extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return alignPidController.getPositionError()<1 && RobotContainer.Subsystems.m_driveSubsystem.frontLeftMotor.getEncoder().getVelocity()<5;
+    return Math.abs(Subsystems.m_limelightSubsystem.getX())<2 && RobotContainer.Subsystems.m_driveSubsystem.frontLeftMotor.getEncoder().getVelocity()<2;
   }
 }

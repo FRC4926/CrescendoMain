@@ -124,7 +124,7 @@ public class Robot extends TimedRobot {
 
     Subsystems.m_driveSubsystem.resetEncoders();
     Subsystems.m_driveSubsystem.resetGyro();
-    // Subsystems.m_driveSubsystem.nullRampRates();
+    Subsystems.m_driveSubsystem.nullRampRates();
     Subsystems.m_driveSubsystem.setBrakeMode();
 
     // Drives Robot

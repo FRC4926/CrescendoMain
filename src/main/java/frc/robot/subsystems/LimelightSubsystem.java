@@ -34,7 +34,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public LimelightSubsystem() {
   }
 
-  public void runLime() {
+  public void updateLimelight() {
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     ta = table.getEntry("ta");

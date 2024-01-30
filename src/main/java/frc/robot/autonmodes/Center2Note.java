@@ -8,6 +8,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotContainer.Subsystems;
+import frc.robot.commands.autoncommands.AutonVisionCommand;
 
 public class Center2Note {
 
@@ -18,6 +19,7 @@ public class Center2Note {
     return Commands.runOnce(() -> Subsystems.m_driveSubsystem.resetPose(trajectory1.getInitialPose()))
         .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory1))
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)))
+        .andThen(new AutonVisionCommand())
         .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory2))
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)));
   }
