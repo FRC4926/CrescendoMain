@@ -18,9 +18,11 @@ import frc.robot.RobotContainer.Subsystems;
 
 public class AutonShooterCommand extends Command {
   long startTime = System.currentTimeMillis();
+  boolean shooterDefault;
   /** Creates a new DriveCommand. */
   public AutonShooterCommand() {
     addRequirements();
+    this.shooterDefault = shooterDefault;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -39,6 +41,9 @@ public class AutonShooterCommand extends Command {
     }
   else if(Subsystems.m_limelightSubsystem.getID()==6 || Subsystems.m_limelightSubsystem.getID()== 5){
    RobotContainer.Subsystems.m_shooterSubsystem.shoot(.1,.1);
+  }
+  else if(shooterDefault){
+       RobotContainer.Subsystems.m_shooterSubsystem.shoot(.3,.3);
   }
   else{
        RobotContainer.Subsystems.m_shooterSubsystem.shoot(.3,.3);

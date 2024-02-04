@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.Controllers;
@@ -25,6 +26,8 @@ public class DriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
+
     double forward = -Controllers.m_driverController.getLeftY();
     double rotate = -Controllers.m_driverController.getRightX();
 
@@ -35,12 +38,8 @@ public class DriveCommand extends Command {
     rotate = Math.signum(rotate) * Math.pow(rotate, 2);
 
     Subsystems.m_driveSubsystem.drive(forward, rotate);
+     RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
 
-    if (RobotContainer.Subsystems.m_driveSubsystem.getAverageRPM() < 2000)
-      RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(100);
-    else {
-      RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(100);
-    }
 
   }
 

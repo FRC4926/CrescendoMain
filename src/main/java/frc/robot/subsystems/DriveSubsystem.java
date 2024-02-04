@@ -11,10 +11,12 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -50,6 +52,10 @@ public class DriveSubsystem extends SubsystemBase {
   public CANSparkMax backLeftMotor = new CANSparkMax(Constants.CAN_IDS.BACK_LEFT_DRIVE, MotorType.kBrushless);
   public CANSparkMax frontRightMotor = new CANSparkMax(Constants.CAN_IDS.FRONT_RIGHT_DRIVE, MotorType.kBrushless);
   public CANSparkMax backRightMotor = new CANSparkMax(Constants.CAN_IDS.BACK_RIGHT_DRIVE, MotorType.kBrushless);
+  SparkPIDController frontLeftPID = frontLeftMotor.getPIDController();
+  SparkPIDController backLeftPID = backLeftMotor.getPIDController();
+  SparkPIDController frontRightPID = frontRightMotor.getPIDController();
+  SparkPIDController backRightPID = backRightMotor.getPIDController();
 
   public RelativeEncoder leftEncoder = frontLeftMotor.getEncoder();
   public RelativeEncoder rightEncoder = frontRightMotor.getEncoder();
@@ -59,8 +65,57 @@ public class DriveSubsystem extends SubsystemBase {
   public DifferentialDriveOdometry m_odometry;
 
   public Rotation2d getRotation2d() {
+
     return navX.getRotation2d();
   }
+  public void pidControllerSetUp(){
+    SmartDashboard.putNumber("FF:",frontLeftPID.getFF());
+    SmartDashboard.putNumber("P", frontLeftPID.getP());
+    SmartDashboard.putNumber("I", frontLeftPID.getI());
+    SmartDashboard.putNumber("D", frontLeftPID.getD());
+    frontLeftPID.setFF(0.0002,0);
+    frontLeftPID.setP(0.,0);
+    frontLeftPID.setI(0,0);
+    frontLeftPID.setD(0,0);
+
+    backLeftPID.setFF(0.0002,0);
+    backLeftPID.setP(0.,0);
+    backLeftPID.setI(0,0);
+    backLeftPID.setD(0,0);
+
+    frontRightPID.setFF(0.0002,0);
+    frontRightPID.setP(0,0);
+    frontRightPID.setI(0,0);
+    frontRightPID.setD(0,0);
+
+    backRightPID.setFF(0.0002,0);
+    backRightPID.setP(0,0);
+    backRightPID.setI(0,0);
+    backRightPID.setD(0,0);
+  }
+  public void driveWithReference(double forward, double turn){
+    int maxRPM = 5600;
+    double speedLeft = forward + turn;
+    double speedRight = forward-turn;
+    if(speedLeft>1){
+      speedLeft = 1;
+    }
+    else if(speedLeft<-1){
+      speedLeft = -1;
+    }
+    if(speedRight>1){
+      speedRight = 1;
+    }
+    else if(speedRight<-1){
+      speedRight = -1;
+    }
+    frontLeftPID.setReference(speedLeft*maxRPM, ControlType.kVelocity,0);
+    frontRightPID.setReference(speedRight*maxRPM, ControlType.kVelocity,0);
+    backLeftPID.setReference(speedLeft*maxRPM, ControlType.kVelocity,0);
+    backRightPID.setReference(speedRight*maxRPM, ControlType.kVelocity,0);
+
+  }
+
 
   public double getLeftWheel() {
     return getLeftEncoderVelocity();
@@ -158,6 +213,11 @@ public class DriveSubsystem extends SubsystemBase {
     frontLeftMotor.setOpenLoopRampRate(0);
     backRightMotor.setOpenLoopRampRate(0);
     frontRightMotor.setOpenLoopRampRate(0);
+    backLeftMotor.setClosedLoopRampRate(0);
+    frontLeftMotor.setClosedLoopRampRate(0);
+    backRightMotor.setClosedLoopRampRate(0);
+    frontRightMotor.setClosedLoopRampRate(0);
+
   }
 
   public double getRightEncoderPosition() {

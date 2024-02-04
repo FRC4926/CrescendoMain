@@ -14,17 +14,19 @@ public class IntakeSubsystem extends SubsystemBase {
   public CANSparkMax conveyor = new CANSparkMax(Constants.CAN_IDS.CONVEYOR, MotorType.kBrushless);
   public CANSparkMax intake = new CANSparkMax(Constants.CAN_IDS.INTAKE, MotorType.kBrushless);
   public IntakeSubsystem() {
-
+    intake.setSmartCurrentLimit(60);
   }
 
   public void intake() {
-    if (!input.get()) {
-      conveyor.set(0.3);
-      intake.set(0.3);
-      RobotContainer.Subsystems.m_shooterSubsystem.shoot(-.1,-.1);
-    } else {
-      stop();
-    }
+    // if (!input.get()) {
+    //   conveyor.set(0.3);
+    //   intake.set(0.3);
+    //   RobotContainer.Subsystems.m_shooterSubsystem.shoot(-.1,-.1);
+    // } else {
+    //   stop();
+    // }
+        intake.set(-1);
+
   }
 
   public void stop() {

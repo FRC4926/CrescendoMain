@@ -31,10 +31,10 @@ public final class Constants {
     public static final int BACK_LEFT_DRIVE = 2;
     public static final int FRONT_RIGHT_DRIVE = 3;
     public static final int BACK_RIGHT_DRIVE = 4;
-    public static final int CONVEYOR = 5;
-    public static final int INTAKE = 6;
+    public static final int CONVEYOR = 6;
+    public static final int INTAKE = 8;
     public static final int SHOOTER_TOP = 7;
-    public static final int SHOOTER_BOTTOM = 8;
+    public static final int SHOOTER_BOTTOM = 5;
     public static final int ARM_LEFT = 9;
     public static final int ARM_RIGHT = 10;
 

@@ -1,6 +1,8 @@
 {
   "download": {
-    "localDir": "C:\\Users\\Team4926\\Desktop\\DataLogs",
-    "serverTeam": "4926"
+    "serverTeam": "4925"
+  },
+  "output": {
+    "outputFolder": "C:\\Users\\keega\\Documents\\DataLogs"
   }
 }

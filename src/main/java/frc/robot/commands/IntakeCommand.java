@@ -16,19 +16,23 @@ public class IntakeCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(RobotContainer.Controllers.m_operatorController.a().getAsBoolean()){
-        RobotContainer.Subsystems.m_intakeSubsystem.intake();
+    if (RobotContainer.Controllers.m_operatorController.getRightTriggerAxis() > 0) {
+      RobotContainer.Subsystems.m_intakeSubsystem.intake();
+    } else {
+      RobotContainer.Subsystems.m_intakeSubsystem.stop();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

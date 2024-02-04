@@ -10,6 +10,7 @@ import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -90,11 +91,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    // Subsystems.driveSubsystem.setCurrentLimits(60);
     Subsystems.m_driveSubsystem.resetGyro();
     Subsystems.m_driveSubsystem.resetEncoders();
     Subsystems.m_driveSubsystem.setBrakeMode();
-
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -126,18 +125,25 @@ public class Robot extends TimedRobot {
     Subsystems.m_driveSubsystem.resetGyro();
     Subsystems.m_driveSubsystem.nullRampRates();
     Subsystems.m_driveSubsystem.setBrakeMode();
+    RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
+
+    // Subsystems.m_driveSubsystem.pidControllerSetUp();
 
     // Drives Robot
     // CommandScheduler.getInstance().schedule(Commands.m_driveCommand);
+    
+    CommandScheduler.getInstance().schedule(Commands.m_driveCommand);
+    // CommandScheduler.getInstance().schedule(Commands.m_intakeCommand);
 
-    CommandScheduler.getInstance().schedule(Commands.m_alignmentCommand);
+
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // rpmLog.append(Subsystems.m_driveSubsystem.getAverageRPM());
-    // currentLog.append(Subsystems.m_driveSubsystem.getAverageCurrent());
+    SmartDashboard.putNumber("Effort", Subsystems.m_intakeSubsystem.intake.getOutputCurrent());
+    rpmLog.append(Subsystems.m_driveSubsystem.getAverageRPM());
+    currentLog.append(Subsystems.m_driveSubsystem.getAverageCurrent());
   }
 
   @Override
