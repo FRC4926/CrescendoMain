@@ -13,8 +13,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public DigitalInput input = new DigitalInput(Constants.CAN_IDS.COLOR_ID);
   public CANSparkMax conveyor = new CANSparkMax(Constants.CAN_IDS.CONVEYOR, MotorType.kBrushless);
   public CANSparkMax intake = new CANSparkMax(Constants.CAN_IDS.INTAKE, MotorType.kBrushless);
+
   public IntakeSubsystem() {
-    intake.setSmartCurrentLimit(60);
+    intake.setSmartCurrentLimit(60);    intake.setSmartCurrentLimit(60);
+    conveyor.setSmartCurrentLimit(60);
   }
 
   public void intake() {
@@ -28,13 +30,18 @@ public class IntakeSubsystem extends SubsystemBase {
         intake.set(-1);
 
   }
+  public void feed(){
+    conveyor.set(.2);
+  }
 
   public void stop() {
     conveyor.set(0);
     intake.set(0);
-    RobotContainer.Subsystems.m_shooterSubsystem.shoot(0,0);
+    //RobotContainer.Subsystems.m_shooterSubsystem.rev(0,0);
   }
-
+  public void stopShooter(){
+    RobotContainer.Subsystems.m_shooterSubsystem.rev(0,0);
+  }
   public void displaySensor() {
     SmartDashboard.putBoolean("color sensor", input.get());
   }

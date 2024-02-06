@@ -36,11 +36,9 @@ public class DriveCommand extends Command {
 
     forward = Math.signum(forward) * Math.pow(forward, 2);
     rotate = Math.signum(rotate) * Math.pow(rotate, 2);
-
-    Subsystems.m_driveSubsystem.drive(forward, rotate);
-     RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
-
-
+    
+    if (forward != 0 || rotate != 0)
+      Subsystems.m_driveSubsystem.drive(forward, rotate);
   }
 
   // Called once the command ends or is interrupted.

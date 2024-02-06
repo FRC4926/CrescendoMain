@@ -6,6 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.Controller;
 import frc.robot.autonmodes.Center2Note;
+import frc.robot.autonmodes.Left2Note;
+import frc.robot.autonmodes.Left3Note;
+import frc.robot.autonmodes.Left4Note;
 import frc.robot.commands.VisionCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
@@ -72,7 +75,9 @@ public class RobotContainer {
     configureBindings();
 
     m_chooser.setDefaultOption("Center2Note", Center2Note.getCommand());
-
+    m_chooser.addOption("Right2Note", Left2Note.getCommand());
+    m_chooser.addOption("Left3Note", Left3Note.getCommand());
+    m_chooser.addOption("Left4Note", Left4Note.getCommand());
     Shuffleboard.getTab("Autonomous").add(m_chooser);
   }
 

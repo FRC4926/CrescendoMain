@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer.Commands;
 import frc.robot.RobotContainer.Subsystems;
 import frc.robot.commands.DriveCommand;
@@ -74,11 +75,14 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    SmartDashboard.putString("Alliance", DriverStation.getAlliance().get().toString());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    Subsystems.m_driveSubsystem.setBrakeMode();
   }
 
   @Override
@@ -111,8 +115,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     // Subsystems.m_driveSubsystem.driverControlled = true;
-    // Subsystems.m_driveSubsystem.nullRampRates();
-
+    //Subsystems.m_driveSubsystem.nullRampRates();
+    Subsystems.m_driveSubsystem.setCurrentLimits(35);
+    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -123,19 +128,16 @@ public class Robot extends TimedRobot {
 
     Subsystems.m_driveSubsystem.resetEncoders();
     Subsystems.m_driveSubsystem.resetGyro();
-    Subsystems.m_driveSubsystem.nullRampRates();
+    //Subsystems.m_driveSubsystem.nullRampRates();
     Subsystems.m_driveSubsystem.setBrakeMode();
     RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
 
     // Subsystems.m_driveSubsystem.pidControllerSetUp();
 
     // Drives Robot
-    // CommandScheduler.getInstance().schedule(Commands.m_driveCommand);
-    
     CommandScheduler.getInstance().schedule(Commands.m_driveCommand);
-    // CommandScheduler.getInstance().schedule(Commands.m_intakeCommand);
 
-
+   CommandScheduler.getInstance().schedule(Commands.m_intakeCommand);
   }
 
   /** This function is called periodically during operator control. */

@@ -32,17 +32,17 @@ public class ShooterCommand extends Command {
   public void execute() {
     if(RobotContainer.Controllers.m_driverController.y().getAsBoolean()){
     if(Subsystems.m_limelightSubsystem.getID()==7 ||  Subsystems.m_limelightSubsystem.getID()==4){
-   RobotContainer.Subsystems.m_shooterSubsystem.shoot(.3,.3);
+   RobotContainer.Subsystems.m_shooterSubsystem.rev(.3,.3);
     }
   else if(Subsystems.m_limelightSubsystem.getID()==6 || Subsystems.m_limelightSubsystem.getID()== 5){
-   RobotContainer.Subsystems.m_shooterSubsystem.shoot(.1,.1);
+   RobotContainer.Subsystems.m_shooterSubsystem.rev(.1,.1);
   }
   else{
-       RobotContainer.Subsystems.m_shooterSubsystem.shoot(.3,.3);
+       RobotContainer.Subsystems.m_shooterSubsystem.rev(.3,.3);
   }
 }
 else if(RobotContainer.Controllers.m_driverController.x().getAsBoolean()){
-  RobotContainer.Subsystems.m_shooterSubsystem.shoot(.1, .1);
+  RobotContainer.Subsystems.m_shooterSubsystem.rev(.1, .1);
 }
 
   }

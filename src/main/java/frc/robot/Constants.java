@@ -22,8 +22,8 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   // public static final double kTurnRateConstant = .7;
   public static class Auton {
-    public static final double startingX = 0;
-    public static final double startingY = 2;
+    public static final double subwooferTopRPM = 0;
+    public static final double subwooferBottomRPM = 0;
   }
 
   public static class CAN_IDS {
@@ -31,10 +31,10 @@ public final class Constants {
     public static final int BACK_LEFT_DRIVE = 2;
     public static final int FRONT_RIGHT_DRIVE = 3;
     public static final int BACK_RIGHT_DRIVE = 4;
-    public static final int CONVEYOR = 6;
+    public static final int CONVEYOR = 5;
     public static final int INTAKE = 8;
     public static final int SHOOTER_TOP = 7;
-    public static final int SHOOTER_BOTTOM = 5;
+    public static final int SHOOTER_BOTTOM = 6;
     public static final int ARM_LEFT = 9;
     public static final int ARM_RIGHT = 10;
 
@@ -55,13 +55,13 @@ public final class Constants {
   }
 
   public static class Robot {
-    public static final double ksVolts = 0.17882;
+    public static final double ksVolts = 0.29328;
     public static final double kaVoltSecondsSquaredPerMeter = 0;
-    public static final double kvVoltSecondsPerMeter = 2.6868;
-    public static final double kTrackwidthMeters = .67;
+    public static final double kvVoltSecondsPerMeter = 2.7144;
+    public static final double kTrackwidthMeters = .57;
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
         kTrackwidthMeters);
-    public static final double kPDriveVel = .98;
+    public static final double kPDriveVel = 0.1884;
     public static final double kWheelDiameter = Units.inchesToMeters(6);
     public static final double kGearRatio = 10.86;
     public static final double kLinearDistanceConversionFactor = (Math.PI * kWheelDiameter / kGearRatio);
@@ -71,6 +71,8 @@ public final class Constants {
     public final static double wristAngle = 909;
     public final static double shoulderGearRation = 1 / 156;
     public final static double ampAngle = 909;
+    public final static double shooterP = .1;
+    public static final double shooterMargins = 0;
   }
 
 }

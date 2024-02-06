@@ -17,12 +17,13 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.Subsystems;
 
 public class AutonShooterCommand extends Command {
-  long startTime = System.currentTimeMillis();
-  boolean shooterDefault;
+  double topRMP = 0;
+  double bottomRPM = 0;
   /** Creates a new DriveCommand. */
-  public AutonShooterCommand() {
+  public AutonShooterCommand(double topRPM, double bottomRPM) {
+    this.topRMP = topRPM;
+    this.bottomRPM = bottomRPM;
     addRequirements();
-    this.shooterDefault = shooterDefault;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -35,20 +36,8 @@ public class AutonShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   
-    if(Subsystems.m_limelightSubsystem.getID()==7 ||  Subsystems.m_limelightSubsystem.getID()==4){
-   RobotContainer.Subsystems.m_shooterSubsystem.shoot(.3,.3);
-    }
-  else if(Subsystems.m_limelightSubsystem.getID()==6 || Subsystems.m_limelightSubsystem.getID()== 5){
-   RobotContainer.Subsystems.m_shooterSubsystem.shoot(.1,.1);
+   Subsystems.m_shooterSubsystem.rev(topRMP,bottomRPM);
   }
-  else if(shooterDefault){
-       RobotContainer.Subsystems.m_shooterSubsystem.shoot(.3,.3);
-  }
-  else{
-       RobotContainer.Subsystems.m_shooterSubsystem.shoot(.3,.3);
-  }
-}
 
 
   
@@ -62,6 +51,6 @@ public class AutonShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return startTime-System.currentTimeMillis()<1200;
+    return !Subsystems.m_shooterSubsystem.rev(topRMP,bottomRPM);
   }
 }

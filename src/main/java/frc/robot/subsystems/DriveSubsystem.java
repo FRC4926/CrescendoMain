@@ -23,26 +23,27 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+//import edu.wpi.first.math.kinematics.ChassisSpeeds;
+//import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.datalog.DataLog;
+//import edu.wpi.first.math.util.Units;
+//import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+//import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+//import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
+//import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.Subsystems;
 import frc.robot.util.LookUpTableCurrentLimits;
 
@@ -321,32 +322,34 @@ public class DriveSubsystem extends SubsystemBase {
   double previousLeftSpeed = getLeftWheel();
   double previousRightSpeed = getRightWheel();
 
-  public void adjustCurrentLimit() {
-    if ((getRightWheel() - previousRightSpeed) / getRightWheel() > 0.02) {
-      rightLimitTable.accelerateTable();
-    } else if ((getRightWheel() - previousRightSpeed) / getRightWheel() < -0.02) {
-      rightLimitTable.decelerateTable();
-    }
-    if ((getLeftWheel() - previousRightSpeed) / getLeftWheel() > 0.02) {
-      leftLimitTable.accelerateTable();
-    } else if ((getLeftWheel() - previousRightSpeed) / getLeftWheel() < -0.02) {
-      leftLimitTable.decelerateTable();
-    }
-    frontLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
-        - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-    backLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
-        - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-    frontRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
-        - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-    backRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
-        - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-  }
+  // public void adjustCurrentLimit() {
+  //   if ((getRightWheel() - previousRightSpeed) / getRightWheel() > 0.02) {
+  //     rightLimitTable.accelerateTable();
+  //   } else if ((getRightWheel() - previousRightSpeed) / getRightWheel() < -0.02) {
+  //     rightLimitTable.decelerateTable();
+  //   }
+  //   if ((getLeftWheel() - previousRightSpeed) / getLeftWheel() > 0.02) {
+  //     leftLimitTable.accelerateTable();
+  //   } else if ((getLeftWheel() - previousRightSpeed) / getLeftWheel() < -0.02) {
+  //     leftLimitTable.decelerateTable();
+  //   }
+  //   frontLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
+  //       - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
+  //   backLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
+  //       - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
+  //   frontRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
+  //       - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
+  //   backRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
+  //       - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
+  // }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     frontLeftMotor.setVoltage(leftVolts);
     frontRightMotor.setVoltage(rightVolts);
     difDrive.feed();
   }
+
+
 
   public double getAverageRPM() {
     return (Math.abs(getLeftWheel()) + Math.abs(getRightWheel())) * 30
@@ -362,30 +365,17 @@ public class DriveSubsystem extends SubsystemBase {
     // if (driverControlled) {
     // adjustCurrentLimit();
     // }
-
+    SmartDashboard.putNumber("Gyro Angle",m_odometry.getPoseMeters().getRotation().getDegrees());
     m_odometry.update(navX.getRotation2d(), getLeftEncoderPosition(),
         getRightEncoderPosition());
-
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("frontLeftEncoder", getLeftEncoderPosition());
-    SmartDashboard.putNumber("backLeftEncoder", getLeftEncoderPosition());
-    SmartDashboard.putNumber("frontRightEncoder", getRightEncoderPosition());
-    SmartDashboard.putNumber("backRightEncoder", getRightEncoderPosition());
-
-    SmartDashboard.putNumber("average RPM", getAverageRPM());
-    SmartDashboard.putNumber("current", frontLeftMotor.getOutputCurrent());
-
-    SmartDashboard.putNumber("Average Distance", getAverageEncoderDistance());
-    SmartDashboard.putNumber("Gyro Yaw", getGyroYaw());
-    SmartDashboard.putNumber("Turn Rate", getTurnRate());
-
-    // This method will be called once per scheduler
+        SmartDashboard.putNumber("Left Wheel Velocity", getLeftEncoderVelocity());
+        SmartDashboard.putNumber("Right Wheel Velocity", getRightEncoderVelocity());
   }
 
   public Trajectory getTrajectory(String filePath) {
 
     try {
-      Path path = Filesystem.getDeployDirectory().toPath().resolve("paths/" + filePath + ".wpilib.json");
+      Path path = Filesystem.getDeployDirectory().toPath().resolve("paths/" + DriverStation.getAlliance().get().toString() + filePath + ".wpilib.json");
       Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(path);
       return trajectory;
     } catch (IOException ex) {
