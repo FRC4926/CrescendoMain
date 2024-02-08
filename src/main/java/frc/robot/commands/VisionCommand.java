@@ -30,12 +30,7 @@ public class VisionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.Subsystems.m_limelightSubsystem.updateLimelight();
-      SmartDashboard.putNumber("Turn Effort", turnEffort);
-    if (RobotContainer.Controllers.m_driverController.a().getAsBoolean()) {
-      turnEffort = alignPidController.getEffort();
-      RobotContainer.Subsystems.m_driveSubsystem.drive(0, turnEffort);
-    }
+    
   }
 
   // Called once the command ends or is interrupted.

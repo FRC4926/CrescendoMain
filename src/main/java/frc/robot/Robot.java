@@ -7,9 +7,12 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -114,6 +117,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    //    AddressableLED m_led = new AddressableLED(9);
+    //   AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
+    //   m_led.setLength(m_ledBuffer.getLength());
+
+    //   m_led.setData(m_ledBuffer);
+    //   m_led.start();
+    //   for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+    //     // Sets the specified LED to the RGB values for red
+    //     m_ledBuffer.setRGB(i, 255, 0, 0);
+    //  }
+     
+    //  m_led.setData(m_ledBuffer);
     // Subsystems.m_driveSubsystem.driverControlled = true;
     //Subsystems.m_driveSubsystem.nullRampRates();
     Subsystems.m_driveSubsystem.setCurrentLimits(35);
@@ -143,6 +158,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    RobotContainer.Controllers.m_driverController.setRumble(RumbleType.kBothRumble, .1);
     SmartDashboard.putNumber("Effort", Subsystems.m_intakeSubsystem.intake.getOutputCurrent());
     rpmLog.append(Subsystems.m_driveSubsystem.getAverageRPM());
     currentLog.append(Subsystems.m_driveSubsystem.getAverageCurrent());

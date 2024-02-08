@@ -12,14 +12,14 @@ import frc.robot.autonmodes.Left4Note;
 import frc.robot.commands.VisionCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.ShootingCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,7 +49,7 @@ public class RobotContainer {
 
   // The Commands are stored here
   public static class Commands {
-    public final static ShooterCommand m_shooterCommand = new ShooterCommand();
+    public final static ShootingCommand m_shooterCommand = new ShootingCommand();
     public final static DriveCommand m_driveCommand = new DriveCommand();
     public final static VisionCommand m_alignmentCommand = new VisionCommand();
     public final static IntakeCommand m_intakeCommand = new IntakeCommand();
@@ -58,10 +58,10 @@ public class RobotContainer {
   // our controllers are stored here
   public static class Controllers {
     // Driver
-    public static CommandXboxController m_driverController = new CommandXboxController(
+    public static XboxController m_driverController = new XboxController(
         Controller.kDriverControllerPort);
     // Operator
-    public static CommandXboxController m_operatorController = new CommandXboxController(
+    public static XboxController m_operatorController = new XboxController(
         Controller.kOperatorControllerPort);
   }
 

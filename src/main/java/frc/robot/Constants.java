@@ -46,6 +46,7 @@ public final class Constants {
 
   public class Field {
     public final static double speakerTagHeight = 51.875;
+    public final static double sourceTagHeight = 48.125;
   }
 
   public static class Controller {
@@ -55,6 +56,7 @@ public final class Constants {
   }
 
   public static class Robot {
+    public static final double limeLightOffSet = 6;
     public static final double ksVolts = 0.29328;
     public static final double kaVoltSecondsSquaredPerMeter = 0;
     public static final double kvVoltSecondsPerMeter = 2.7144;
@@ -71,6 +73,7 @@ public final class Constants {
     public final static double wristAngle = 909;
     public final static double shoulderGearRation = 1 / 156;
     public final static double ampAngle = 909;
+    public final static double subWooferAngle = 909;
     public final static double shooterP = .1;
     public static final double shooterMargins = 0;
   }

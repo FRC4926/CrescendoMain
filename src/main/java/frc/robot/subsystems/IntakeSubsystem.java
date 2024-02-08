@@ -15,29 +15,33 @@ public class IntakeSubsystem extends SubsystemBase {
   public CANSparkMax intake = new CANSparkMax(Constants.CAN_IDS.INTAKE, MotorType.kBrushless);
 
   public IntakeSubsystem() {
-    intake.setSmartCurrentLimit(60);    intake.setSmartCurrentLimit(60);
+    intake.restoreFactoryDefaults();
+    conveyor.restoreFactoryDefaults();
+
+    intake.setSmartCurrentLimit(60);
     conveyor.setSmartCurrentLimit(60);
   }
 
   public void intake() {
-    // if (!input.get()) {
-    //   conveyor.set(0.3);
-    //   intake.set(0.3);
-    //   RobotContainer.Subsystems.m_shooterSubsystem.shoot(-.1,-.1);
-    // } else {
-    //   stop();
-    // }
-        intake.set(-1);
+    if (!input.get()) {
+      conveyor.set(-0.8);
+      intake.set(-0.8);
+    } else {
+      stop();
+    }
 
   }
-  public void feed(){
-    conveyor.set(.2);
+  public void runConveryorForShoot(){
+    conveyor.set(-1);
+  }
+  public void outTake(){
+      conveyor.set(0.8);
+      intake.set(0.8);
   }
 
   public void stop() {
     conveyor.set(0);
     intake.set(0);
-    //RobotContainer.Subsystems.m_shooterSubsystem.rev(0,0);
   }
   public void stopShooter(){
     RobotContainer.Subsystems.m_shooterSubsystem.rev(0,0);

@@ -45,7 +45,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 //import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.Subsystems;
-import frc.robot.util.LookUpTableCurrentLimits;
 
 public class DriveSubsystem extends SubsystemBase {
   public AHRS navX = new AHRS(Port.kMXP);
@@ -206,6 +205,22 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void drive(double forward, double rotate) {
+    if(frontLeftMotor.getEncoder().getVelocity()<2000){
+      frontLeftMotor.setSmartCurrentLimit(40);
+      backLeftMotor.setSmartCurrentLimit(40);
+    }
+    else{
+            frontLeftMotor.setSmartCurrentLimit(60);
+            backLeftMotor.setSmartCurrentLimit(60);
+    }
+        if(frontRightMotor.getEncoder().getVelocity()<2000){
+      frontRightMotor.setSmartCurrentLimit(40);
+      backRightMotor.setSmartCurrentLimit(40);
+    }
+    else{
+            frontRightMotor.setSmartCurrentLimit(60);
+            backRightMotor.setSmartCurrentLimit(60);
+    }
     difDrive.arcadeDrive(forward, rotate);
   }
 
@@ -258,90 +273,8 @@ public class DriveSubsystem extends SubsystemBase {
     backRightMotor.setSmartCurrentLimit(limit);
   }
 
-  PIDController speedDriveController = new PIDController(.01, .01, .01);
-  double maxWheelSpeed = 4.17576;
-  double speed;
-
-  public void speedDrive(double input, double turn) {
-    double percent;
-    // set left
-    if (input - turn > 1)
-      percent = 1;
-    else if (input - turn < -1)
-      percent = -1;
-    else
-      percent = input - turn;
-    speedDriveController.setSetpoint((percent) * maxWheelSpeed);
-    speed = speedDriveController.calculate(getLeftWheel());
-    frontLeftMotor.set(speed);
-    backLeftMotor.set(speed);
-    // set right
-    if (input + turn > 1)
-      percent = 1;
-    else if (input + turn < -1)
-      percent = -1;
-    else
-      percent = input + turn;
-    speedDriveController.setSetpoint((input + percent) * maxWheelSpeed);
-    speed = speedDriveController.calculate(getRightWheel());
-    frontRightMotor.set(speed);
-    backRightMotor.set(speed);
-
-  }
-
-  public void speedDriveSlowRampUp(double input, double turn) {
-    double percent;
-    // set left
-    if (input - turn > 1)
-      percent = 1;
-    else if (input - turn < -1)
-      percent = -1;
-    else
-      percent = input - turn;
-    speedDriveController.setSetpoint((percent) * maxWheelSpeed);
-    speed = speedDriveController.calculate(getLeftWheel());
-    frontLeftMotor.set(speed);
-    backLeftMotor.set(speed);
-    // set right
-    if (input + turn > 1)
-      percent = 1;
-    else if (input + turn < -1)
-      percent = -1;
-    else
-      percent = input + turn;
-    speedDriveController.setSetpoint((input + percent) * maxWheelSpeed);
-    speed = speedDriveController.calculate(getRightWheel());
-    frontRightMotor.set(speed);
-    backRightMotor.set(speed);
-
-  }
-
-  LookUpTableCurrentLimits leftLimitTable = new LookUpTableCurrentLimits();
-  LookUpTableCurrentLimits rightLimitTable = new LookUpTableCurrentLimits();
-  LookUpTableCurrentLimits angleLimitTable = new LookUpTableCurrentLimits();
-  double previousLeftSpeed = getLeftWheel();
-  double previousRightSpeed = getRightWheel();
-
-  // public void adjustCurrentLimit() {
-  //   if ((getRightWheel() - previousRightSpeed) / getRightWheel() > 0.02) {
-  //     rightLimitTable.accelerateTable();
-  //   } else if ((getRightWheel() - previousRightSpeed) / getRightWheel() < -0.02) {
-  //     rightLimitTable.decelerateTable();
-  //   }
-  //   if ((getLeftWheel() - previousRightSpeed) / getLeftWheel() > 0.02) {
-  //     leftLimitTable.accelerateTable();
-  //   } else if ((getLeftWheel() - previousRightSpeed) / getLeftWheel() < -0.02) {
-  //     leftLimitTable.decelerateTable();
-  //   }
-  //   frontLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
-  //       - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-  //   backLeftMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getLeftWheel())
-  //       - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-  //   frontRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
-  //       - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-  //   backRightMotor.setSmartCurrentLimit((int) (leftLimitTable.lookUpLimit((getRightWheel())
-  //       - angleLimitTable.lookUpLimit(RobotContainer.Subsystems.m_shooterSubsystem.getCurrentAngle()))));
-  // }
+  
+  
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     frontLeftMotor.setVoltage(leftVolts);
