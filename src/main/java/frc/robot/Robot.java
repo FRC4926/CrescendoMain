@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.proto.Controller;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -13,12 +14,14 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer.Commands;
+import frc.robot.RobotContainer.Controllers;
 import frc.robot.RobotContainer.Subsystems;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
@@ -37,8 +40,27 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  DoubleLogEntry rpmLog;
-  DoubleLogEntry currentLog;
+  DoubleLogEntry rpmLogFL;
+  DoubleLogEntry rpmLogFR;
+  DoubleLogEntry rpmLogBL;
+  DoubleLogEntry rpmLogBR;
+
+  DoubleLogEntry currentLogFL;
+  DoubleLogEntry currentLogFR;
+  DoubleLogEntry currentLogBL;
+  DoubleLogEntry currentLogBR;
+
+  DoubleLogEntry voltageLogFL;
+  DoubleLogEntry voltageLogFR;
+  DoubleLogEntry voltageLogBL;
+  DoubleLogEntry voltageLogBR;
+
+  DoubleLogEntry busVoltage;
+  DoubleLogEntry pdVolatage;
+  DoubleLogEntry inputFL;
+  DoubleLogEntry outputFL;
+  PowerDistribution PD = new PowerDistribution();
+
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -54,8 +76,31 @@ public class Robot extends TimedRobot {
 
     DataLogManager.start();
     DataLog log = DataLogManager.getLog();
-    rpmLog = new DoubleLogEntry(log, "RPM");
-    currentLog = new DoubleLogEntry(log, "Current");
+    rpmLogFL = new DoubleLogEntry(log, "RPM-FL");
+    rpmLogBL = new DoubleLogEntry(log, "RPM-BL");
+    rpmLogFR = new DoubleLogEntry(log, "RPM-FR");
+    rpmLogBR = new DoubleLogEntry(log, "RPM-BR");
+
+    currentLogFL = new DoubleLogEntry(log, "Current-FL");
+    currentLogBL = new DoubleLogEntry(log, "Current-BL");
+    currentLogFR = new DoubleLogEntry(log, "Current-FR");
+    currentLogBR = new DoubleLogEntry(log, "Current-BR");
+    
+    currentLogFL = new DoubleLogEntry(log, "Current-FL");
+    currentLogBL = new DoubleLogEntry(log, "Current-BL");
+    currentLogFR = new DoubleLogEntry(log, "Current-FR");
+    currentLogBR = new DoubleLogEntry(log, "Current-BR");
+
+    voltageLogFL = new DoubleLogEntry(log, "Voltage-FL");
+    voltageLogBL = new DoubleLogEntry(log, "Voltage-BL");
+    voltageLogFR = new DoubleLogEntry(log, "Voltage-FR");
+    voltageLogBR = new DoubleLogEntry(log, "Voltage-BR");
+
+    busVoltage = new DoubleLogEntry(log, "BusVoltage");
+    inputFL = new DoubleLogEntry(log, "Input-FL");
+    pdVolatage = new DoubleLogEntry(log, "pdVoltage");
+    outputFL = new DoubleLogEntry(log, "Output-FL");
+
   }
 
   /**
@@ -143,9 +188,9 @@ public class Robot extends TimedRobot {
 
     Subsystems.m_driveSubsystem.resetEncoders();
     Subsystems.m_driveSubsystem.resetGyro();
-    //Subsystems.m_driveSubsystem.nullRampRates();
+    Subsystems.m_driveSubsystem.nullRampRates();
     Subsystems.m_driveSubsystem.setBrakeMode();
-    RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
+    // RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
 
     // Subsystems.m_driveSubsystem.pidControllerSetUp();
 
@@ -160,8 +205,28 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     RobotContainer.Controllers.m_driverController.setRumble(RumbleType.kBothRumble, .1);
     SmartDashboard.putNumber("Effort", Subsystems.m_intakeSubsystem.intake.getOutputCurrent());
-    rpmLog.append(Subsystems.m_driveSubsystem.getAverageRPM());
-    currentLog.append(Subsystems.m_driveSubsystem.getAverageCurrent());
+    // rpmLogFL.append(Subsystems.m_driveSubsystem.frontLeftMotor.getEncoder().getVelocity()/(Constants.Robot.kLinearDistanceConversionFactor / 60));
+    // rpmLogBL.append(Subsystems.m_driveSubsystem.backLeftMotor.getEncoder().getVelocity()/(Constants.Robot.kLinearDistanceConversionFactor / 60));
+    // rpmLogFR.append(Subsystems.m_driveSubsystem.frontRightMotor.getEncoder().getVelocity()/(Constants.Robot.kLinearDistanceConversionFactor / 60));
+    // rpmLogBR.append(Subsystems.m_driveSubsystem.backRightMotor.getEncoder().getVelocity()/(Constants.Robot.kLinearDistanceConversionFactor / 60));
+  
+    // currentLogFL.append(Subsystems.m_driveSubsystem.frontLeftMotor.getOutputCurrent());
+    // currentLogBL.append(Subsystems.m_driveSubsystem.backLeftMotor.getOutputCurrent());
+    // currentLogFR.append(Subsystems.m_driveSubsystem.frontRightMotor.getOutputCurrent());
+    // currentLogBR.append(Subsystems.m_driveSubsystem.backRightMotor.getOutputCurrent());
+    // voltageLogFL.append(Subsystems.m_driveSubsystem.frontLeftMotor.getBusVoltage() * Subsystems.m_driveSubsystem.frontLeftMotor.getAppliedOutput());
+    // voltageLogBL.append(Subsystems.m_driveSubsystem.backLeftMotor.getBusVoltage() * Subsystems.m_driveSubsystem.backLeftMotor.getAppliedOutput());
+    // voltageLogFR.append(Subsystems.m_driveSubsystem.frontRightMotor.getBusVoltage() * Subsystems.m_driveSubsystem.frontRightMotor.getAppliedOutput());
+    // voltageLogBR.append(Subsystems.m_driveSubsystem.backRightMotor.getBusVoltage() * Subsystems.m_driveSubsystem.backRightMotor.getAppliedOutput());
+
+    // busVoltage.append(Subsystems.m_driveSubsystem.frontLeftMotor.getBusVoltage());
+    // pdVolatage.append(PD.getVoltage());
+    // inputFL.append(Controllers.m_driverController.getLeftY()*Subsystems.m_driveSubsystem.backRightMotor.getBusVoltage()*1.2);
+    // outputFL.append( Subsystems.m_driveSubsystem.frontLeftMotor.getAppliedOutput());
+    // inputFR.append(Subsystems.m_driveSubsystem.frontRightMotor.getBusVoltage() * Controllers.m_driverController.getLeftY());
+    // inputBR.append(Subsystems.m_driveSubsystem.backRightMotor.getBusVoltage() * Controllers.m_driverController.getLeftY());
+
+    
   }
 
   @Override

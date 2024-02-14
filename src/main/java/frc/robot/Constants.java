@@ -71,7 +71,7 @@ public final class Constants {
     public final static double cameraAngle = 0;
     public final static double initialShoulderAngle = 909;
     public final static double wristAngle = 909;
-    public final static double shoulderGearRation = 1 / 156;
+    public final static double shoulderGearRatio = 1 / 156;
     public final static double ampAngle = 909;
     public final static double subWooferAngle = 909;
     public final static double shooterP = .1;

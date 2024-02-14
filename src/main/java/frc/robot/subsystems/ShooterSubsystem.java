@@ -36,7 +36,7 @@ double rpmTolerance = 100;
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  PIDController rpmController = new PIDController(0.01, 0, 0);
+  PIDController rpmController = new PIDController(0.0012, 0.00015, 0);
   public void shoot(){
       rpmController.setTolerance(rpmTolerance);
       rpmController.setSetpoint(desiredRPM);
@@ -58,8 +58,6 @@ double rpmTolerance = 100;
     bottom.set(0);
     top.set(0);
   }
-  public double getCurrentAngle(){
-    return 0;
-  }
+ 
 
 }

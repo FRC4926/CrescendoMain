@@ -44,10 +44,15 @@ public class IntakeSubsystem extends SubsystemBase {
     intake.set(0);
   }
   public void stopShooter(){
-    RobotContainer.Subsystems.m_shooterSubsystem.rev(0,0);
+    RobotContainer.Subsystems.m_shooterSubsystem.idle();
   }
   public void displaySensor() {
-    SmartDashboard.putBoolean("color sensor", input.get());
+    if(input.get()){
+      SmartDashboard.putBoolean("Have Note?", true);
+    }
+    else{
+      SmartDashboard.putBoolean("Have Note?", false);
+    }
   }
 
   @Override

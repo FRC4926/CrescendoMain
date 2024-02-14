@@ -43,12 +43,7 @@ public class AutonShooterCommand extends Command {
   else if(Subsystems.m_limelightSubsystem.getID()==6 || Subsystems.m_limelightSubsystem.getID()== 5){
    RobotContainer.Subsystems.m_shooterSubsystem.shoot();
   }
-  else if(shooterDefault){
-       RobotContainer.Subsystems.m_shooterSubsystem.shoot();
-  }
-  else{
-       RobotContainer.Subsystems.m_shooterSubsystem.shoot();
-  }
+ 
 }
 
 
@@ -63,6 +58,6 @@ public class AutonShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !Subsystems.m_shooterSubsystem.rev(topRMP,bottomRPM);
+    return RobotContainer.Subsystems.m_shooterSubsystem.isFinished();
   }
 }

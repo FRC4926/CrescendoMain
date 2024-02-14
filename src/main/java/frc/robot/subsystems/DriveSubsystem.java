@@ -281,6 +281,32 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightMotor.setVoltage(rightVolts);
     difDrive.feed();
   }
+  public void voltageArcadeDrive(double forward, double turn){
+    
+    double leftEffort = forward+turn;
+    double rightEffort = forward-turn;
+    if(leftEffort>1)
+    leftEffort=1;
+    if(leftEffort<-1)
+    leftEffort=-1;
+    
+    if(rightEffort>1)
+    rightEffort=1;
+    if(rightEffort<-1)
+    rightEffort=-1;
+    frontLeftMotor.setVoltage(frontLeftMotor.getBusVoltage()*leftEffort*1.2);
+    backLeftMotor.setVoltage(backLeftMotor.getBusVoltage()*leftEffort*1.2);
+    frontRightMotor.setVoltage(frontRightMotor.getBusVoltage()*rightEffort*1.2);
+    backRightMotor.setVoltage(backRightMotor.getBusVoltage()*rightEffort*1.2);
+  }
+    public void voltageTankDrive(double left, double right){
+    
+    
+    frontLeftMotor.setVoltage(frontLeftMotor.getBusVoltage()*left*1.2);
+    backLeftMotor.setVoltage(backLeftMotor.getBusVoltage()*left*1.2);
+    frontRightMotor.setVoltage(frontRightMotor.getBusVoltage()*right*1.2);
+    backRightMotor.setVoltage(backRightMotor.getBusVoltage()*right*1.2);
+  }
 
 
 

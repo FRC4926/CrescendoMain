@@ -22,10 +22,11 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (RobotContainer.Controllers.m_operatorController.getLeftY()>.2) {
+      RobotContainer.Subsystems.m_intakeSubsystem.displaySensor();
+    if (RobotContainer.Controllers.m_driverController.getLeftTriggerAxis()>.2) {
       RobotContainer.Subsystems.m_intakeSubsystem.intake();
     } 
-    else if(RobotContainer.Controllers.m_operatorController.getLeftY()<-.2){
+    else if(RobotContainer.Controllers.m_driverController.getRightTriggerAxis()>.2){
             RobotContainer.Subsystems.m_intakeSubsystem.outTake();
     }
     else {

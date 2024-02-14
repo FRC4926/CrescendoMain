@@ -31,6 +31,10 @@ public class DriveCommand extends Command {
     double forward = -Controllers.m_driverController.getLeftY();
     double rotate = -Controllers.m_driverController.getRightX();
 
+
+ 
+
+
     MathUtil.applyDeadband(forward, Constants.Controller.deadband);
     MathUtil.applyDeadband(rotate, Constants.Controller.deadband);
 
@@ -38,7 +42,10 @@ public class DriveCommand extends Command {
     rotate = Math.signum(rotate) * Math.pow(rotate, 2);
     
     if (forward != 0 || rotate != 0)
-      Subsystems.m_driveSubsystem.drive(forward, rotate);
+      Subsystems.m_driveSubsystem.voltageArcadeDrive(forward, rotate);
+    if(Controllers.m_driverController.getYButton()){
+      Subsystems.m_limelightSubsystem.align();
+    }
   }
 
   // Called once the command ends or is interrupted.
