@@ -12,11 +12,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.Controllers;
 import frc.robot.RobotContainer.Subsystems;
 
-public class ShooterCommand extends Command {
+public class ShootingCommand extends Command {
   /** Creates a new DriveCommand. */
-  public ShooterCommand() {
+  public ShootingCommand() {
     addRequirements();
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -30,20 +31,30 @@ public class ShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(RobotContainer.Controllers.m_driverController.y().getAsBoolean()){
-    if(Subsystems.m_limelightSubsystem.getID()==7 ||  Subsystems.m_limelightSubsystem.getID()==4){
-   RobotContainer.Subsystems.m_shooterSubsystem.rev(.3,.3);
+   if(Controllers.m_operatorController.getYButton()){
+    Subsystems.m_shooterSubsystem.shoot();
+    Subsystems.m_limelightSubsystem.align();
+    Subsystems.m_armSubsystem.adjustArmShooterAngle();
+    if(Subsystems.m_limelightSubsystem.isFinsished() && Subsystems.m_armSubsystem.isFinsished() && Subsystems.m_shooterSubsystem.isFinished()){
+      Subsystems.m_intakeSubsystem.runConveryorForShoot();
     }
-  else if(Subsystems.m_limelightSubsystem.getID()==6 || Subsystems.m_limelightSubsystem.getID()== 5){
-   RobotContainer.Subsystems.m_shooterSubsystem.rev(.1,.1);
-  }
-  else{
-       RobotContainer.Subsystems.m_shooterSubsystem.rev(.3,.3);
-  }
-}
-else if(RobotContainer.Controllers.m_driverController.x().getAsBoolean()){
-  RobotContainer.Subsystems.m_shooterSubsystem.rev(.1, .1);
-}
+   } 
+   else if(Controllers.m_operatorController.getAButton()){
+    Subsystems.m_shooterSubsystem.shootAmp();
+    Subsystems.m_armSubsystem.adjustArmAmpAngle();
+    if(Subsystems.m_armSubsystem.isFinsished()&& Subsystems.m_shooterSubsystem.isFinished()){
+      Subsystems.m_intakeSubsystem.runConveryorForShoot();
+    }
+   }
+   else if(Controllers.m_operatorController.getRightTriggerAxis()>0.1){
+    Subsystems.m_shooterSubsystem.shoot();
+   }
+   else{
+    Subsystems.m_shooterSubsystem.idle();
+    Subsystems.m_armSubsystem.goToHome();
+    Subsystems.m_intakeSubsystem.stop();
+   }
+   
 
   }
 

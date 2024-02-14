@@ -36,8 +36,20 @@ public class AutonShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   Subsystems.m_shooterSubsystem.rev(topRMP,bottomRPM);
+   
+    if(Subsystems.m_limelightSubsystem.getID()==7 ||  Subsystems.m_limelightSubsystem.getID()==4){
+   RobotContainer.Subsystems.m_shooterSubsystem.shoot();
+    }
+  else if(Subsystems.m_limelightSubsystem.getID()==6 || Subsystems.m_limelightSubsystem.getID()== 5){
+   RobotContainer.Subsystems.m_shooterSubsystem.shoot();
   }
+  else if(shooterDefault){
+       RobotContainer.Subsystems.m_shooterSubsystem.shoot();
+  }
+  else{
+       RobotContainer.Subsystems.m_shooterSubsystem.shoot();
+  }
+}
 
 
   

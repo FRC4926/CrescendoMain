@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.Subsystems;
+import frc.robot.util.GalacPIDController;
 
 public class LimelightSubsystem extends SubsystemBase {
 
@@ -29,7 +31,9 @@ public class LimelightSubsystem extends SubsystemBase {
   double area = ta.getDouble(0.0);
   double id = tid.getDouble(0.0);
   double z;
-
+ double turnEffort;
+  double driveEffort;
+  GalacPIDController alignPidController = new GalacPIDController(0.015, 0, 0, 0.1, () -> getX(), 0, 2);
   /** Creates a new LimelightSubsystem. */
   public LimelightSubsystem() {
   }
@@ -53,12 +57,34 @@ public class LimelightSubsystem extends SubsystemBase {
     pipelineEntry.setNumber(pipeline);
   }
 
+  public void align(){
+    updateLimelight();
+    alignPidController.setSetpoint(getOffSet());
+    turnEffort = alignPidController.getEffort();
+    RobotContainer.Subsystems.m_driveSubsystem.drive(0, turnEffort);
+  }
+  public void alignForSourceIntake(){
+    updateLimelight();
+    alignPidController.setSetpoint(getOffSet());
+    turnEffort = alignPidController.getEffort();
+    RobotContainer.Subsystems.m_driveSubsystem.drive(0, turnEffort);
+  }
   public double getX() {
     return x;
+  }
+  public double getOffSet(){
+return Math.abs(Math.atan(Constants.Robot.limeLightOffSet/calcVerticalDistance()));
+  }
+    public double getSourceOffSet(){
+return Math.abs(Math.atan(Constants.Robot.limeLightOffSet/calcVerticalDistance()));
   }
 
   public double getY() {
     return y;
+  }
+  public boolean isFinsished(){
+    //4.5 is calculated
+    return Math.abs(alignPidController.getSetpoint()-getX())<4.5 && Subsystems.m_driveSubsystem.frontLeftMotor.getEncoder().getVelocity()<.1;
   }
 
   public double getID() {
@@ -69,13 +95,22 @@ public class LimelightSubsystem extends SubsystemBase {
     return area;
   }
 
-  public double calcHorizontalDistance() {
+  public double calcVerticalDistance() {
 
     double pitch = Math
         .toRadians(Constants.Robot.cameraAngle +
             RobotContainer.Subsystems.m_driveSubsystem.getGyroPitch());
     // target height - camera height
     double dh = Constants.Field.speakerTagHeight - Constants.Robot.cameraHeight;
+    return dh / Math.tan(Math.toRadians(y + pitch));
+  }
+  public double calcVerticalDistanceSource() {
+
+    double pitch = Math
+        .toRadians(Constants.Robot.cameraAngle +
+            RobotContainer.Subsystems.m_driveSubsystem.getGyroPitch());
+    // target height - camera height
+    double dh = Constants.Field.sourceTagHeight - Constants.Robot.cameraHeight;
     return dh / Math.tan(Math.toRadians(y + pitch));
   }
 

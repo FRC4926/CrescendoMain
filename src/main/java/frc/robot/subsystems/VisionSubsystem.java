@@ -84,7 +84,7 @@ public class VisionSubsystem extends SubsystemBase {
               }
             }
             Imgproc.drawContours(mat, points, maxIndex, new Scalar(0, 255, 0), 4);
-
+            
             outputStream.putFrame(mat);
             points.clear();
           }
