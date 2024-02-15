@@ -38,10 +38,10 @@ public class AutonShooterCommand extends Command {
   public void execute() {
    
     if(Subsystems.m_limelightSubsystem.getID()==7 ||  Subsystems.m_limelightSubsystem.getID()==4){
-   RobotContainer.Subsystems.m_shooterSubsystem.shoot();
+   RobotContainer.Subsystems.m_shooterSubsystem.fullSend();
     }
   else if(Subsystems.m_limelightSubsystem.getID()==6 || Subsystems.m_limelightSubsystem.getID()== 5){
-   RobotContainer.Subsystems.m_shooterSubsystem.shoot();
+   RobotContainer.Subsystems.m_shooterSubsystem.fullSend();
   }
  
 }

@@ -26,7 +26,7 @@ public class Center1Note {
         .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM, Constants.Auton.subwooferBottomRPM))
         .andThen(Commands.waitSeconds(.3)
         .deadlineWith(new AutonConveyorCommand()))
-        .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.stop()).alongWith(Commands.runOnce(()->Subsystems.m_intakeSubsystem.stop())))
+        .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.zeroMotors()).alongWith(Commands.runOnce(()->Subsystems.m_intakeSubsystem.stop())))
         .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory1))
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)));
   }
