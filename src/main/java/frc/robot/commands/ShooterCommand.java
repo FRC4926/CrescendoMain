@@ -15,9 +15,9 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.Controllers;
 import frc.robot.RobotContainer.Subsystems;
 
-public class ShootingCommand extends Command {
+public class ShooterCommand extends Command {
   /** Creates a new DriveCommand. */
-  public ShootingCommand() {
+  public ShooterCommand() {
     addRequirements();
     // Use addRequirements() here to declare subsystem dependencies.
   }

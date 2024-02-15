@@ -12,7 +12,7 @@ import frc.robot.autonmodes.Left4Note;
 import frc.robot.commands.VisionCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ShootingCommand;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -49,7 +49,7 @@ public class RobotContainer {
 
   // The Commands are stored here
   public static class Commands {
-    public final static ShootingCommand m_shooterCommand = new ShootingCommand();
+    public final static ShooterCommand m_shooterCommand = new ShooterCommand();
     public final static DriveCommand m_driveCommand = new DriveCommand();
     public final static VisionCommand m_alignmentCommand = new VisionCommand();
     public final static IntakeCommand m_intakeCommand = new IntakeCommand();

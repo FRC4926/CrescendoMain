@@ -43,9 +43,6 @@ public class IntakeSubsystem extends SubsystemBase {
     conveyor.set(0);
     intake.set(0);
   }
-  public void stopShooter(){
-    RobotContainer.Subsystems.m_shooterSubsystem.idle();
-  }
   public void displaySensor() {
     if(input.get()){
       SmartDashboard.putBoolean("Have Note?", true);
@@ -54,6 +51,8 @@ public class IntakeSubsystem extends SubsystemBase {
       SmartDashboard.putBoolean("Have Note?", false);
     }
   }
+
+  
 
   @Override
   public void periodic() {
