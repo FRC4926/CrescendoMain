@@ -69,11 +69,11 @@ public final class Constants {
     public static final double kLinearDistanceConversionFactor = (Math.PI * kWheelDiameter / kGearRatio);
     public final static double cameraHeight = 11.5;
     public final static double cameraAngle = 0;
-    public final static double initialShoulderAngle = 909;
-    public final static double wristAngle = 909;
+    public final static double initialShoulderAngle = 0.488692;
+    public final static double wristAngle = 0;
     public final static double shoulderGearRatio = 1 / 156;
     public final static double ampAngle = 909;
-    public final static double subWooferAngle = 909;
+    public final static double subWooferAngle = 0.488692;
     public final static double shooterP = .1;
     public static final double shooterMargins = 0;
   }

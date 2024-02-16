@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.Controllers;
 import frc.robot.util.LookUpTableShooterAngles;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -113,9 +114,17 @@ private final TrapezoidProfile m_profile =
   }
 
   public void goToHome() {
+    Controllers.m_operatorController.setRumble(RumbleType.kBothRumble, 0);
     armController.setSetpoint(Constants.Robot.initialShoulderAngle);
     armMotor1.setVoltage(armController.calculate(Constants.Robot.initialShoulderAngle) + ff.calculate(Constants.Robot.initialShoulderAngle, ffVelocity));
     armMotor2.setVoltage(armController.calculate(Constants.Robot.initialShoulderAngle) + ff.calculate(Constants.Robot.initialShoulderAngle, ffVelocity));
+  }
+  public void goToSpecifiedAngle(double angle){
+        Controllers.m_operatorController.setRumble(RumbleType.kBothRumble, 0);
+    armController.setSetpoint(angle);
+    armMotor1.setVoltage(armController.calculate(angle) + ff.calculate(angle, ffVelocity));
+    armMotor2.setVoltage(armController.calculate(angle) + ff.calculate(angle, ffVelocity));
+
   }
     public void trapezoidGoToHome() {
       m_goal = new TrapezoidProfile.State(Constants.Robot.initialShoulderAngle,0);
@@ -136,7 +145,13 @@ private final TrapezoidProfile m_profile =
     armMotor1.set(input);
     armMotor2.set(input);
   }
+public void stay(){
+  armController.setSetpoint(armMotor1.getEncoder().getPosition());
+  armController.setTolerance(0);
+  armMotor1.set(armController.calculate(getArmActualAngle()));
+  armMotor2.set(armController.calculate(getArmActualAngle()));
 
+}
   public void subWooferShot() {
     armController.setSetpoint(Constants.Robot.subWooferAngle);
     armMotor1.setVoltage(armController.calculate(getArmActualAngle()) + ff.calculate(getArmDesiredAngle(), ffVelocity));
