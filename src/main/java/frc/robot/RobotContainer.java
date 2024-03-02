@@ -5,20 +5,26 @@
 package frc.robot;
 
 import frc.robot.Constants.Controller;
+import frc.robot.autonmodes.Center1Note;
 import frc.robot.autonmodes.Center2Note;
+import frc.robot.autonmodes.Center3Note;
 import frc.robot.autonmodes.Left2Note;
 import frc.robot.autonmodes.Left3Note;
 import frc.robot.autonmodes.Left4Note;
+import frc.robot.autonmodes.Right2Note;
+import frc.robot.autonmodes.Right3Note;
 import frc.robot.commands.VisionCommand;
+import frc.robot.commands.ArmTestCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.IntakeCommand;
+//import frc.robot.commands.IntakeCommand;
+//import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+//import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+//import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -42,17 +48,20 @@ public class RobotContainer {
     public static DriveSubsystem m_driveSubsystem = new DriveSubsystem();
     public final static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
     public final static LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
-    public final static VisionSubsystem m_visionSubsystem = new VisionSubsystem();
-    public final static IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    //public final static VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+   // public final static IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     public final static ArmSubsystem m_armSubsystem = new ArmSubsystem();
   }
 
   // The Commands are stored here
   public static class Commands {
-    public final static ShooterCommand m_shooterCommand = new ShooterCommand();
+    public final static ArmTestCommand m_armTestCommand = new ArmTestCommand();
+    //public final static ShooterCommand m_shooterCommand = new ShooterCommand();
     public final static DriveCommand m_driveCommand = new DriveCommand();
-    public final static VisionCommand m_alignmentCommand = new VisionCommand();
-    public final static IntakeCommand m_intakeCommand = new IntakeCommand();
+    public final static VisionCommand m_visionCommand = new VisionCommand();
+    public final static ShooterCommand m_shooterCommand2 = new ShooterCommand();
+    
+    //public final static IntakeCommand m_intakeCommand = new IntakeCommand();
   }
 
   // our controllers are stored here
@@ -75,9 +84,14 @@ public class RobotContainer {
     configureBindings();
 
     m_chooser.setDefaultOption("Center2Note", Center2Note.getCommand());
-    m_chooser.addOption("Right2Note", Left2Note.getCommand());
+    m_chooser.addOption("ShortTaxi", Center1Note.getCommand());
+    //m_chooser.addOption("Left2Note", Left2Note.getCommand());
+    //m_chooser.addOption("Right2Note", Left2Note.getCommand());
     m_chooser.addOption("Left3Note", Left3Note.getCommand());
-    m_chooser.addOption("Left4Note", Left4Note.getCommand());
+    //m_chooser.addOption("Left4Note", Left4Note.getCommand());
+    //m_chooser.addOption("Center3Note", Center3Note.getCommand());
+    //m_chooser.addOption("Right2Note", Right2Note.getCommand());
+   // m_chooser.addOption("Right3Note", Right3Note.getCommand());
     Shuffleboard.getTab("Autonomous").add(m_chooser);
   }
 

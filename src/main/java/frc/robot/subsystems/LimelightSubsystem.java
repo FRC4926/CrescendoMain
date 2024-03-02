@@ -33,7 +33,7 @@ public class LimelightSubsystem extends SubsystemBase {
   double z;
  double turnEffort;
   double driveEffort;
-  GalacPIDController alignPidController = new GalacPIDController(0.015, 0, 0, 0.1, () -> getX(), 0, 2);
+  GalacPIDController alignPidController = new GalacPIDController(0.04, 0, 0, 0.1, () -> getOffSet(), 0, 1);
   /** Creates a new LimelightSubsystem. */
   public LimelightSubsystem() {
   }
@@ -96,26 +96,18 @@ return Math.abs(Math.atan(Constants.Robot.limeLightOffSet/calcVerticalDistance()
   }
 
   public double calcVerticalDistance() {
-
-    double pitch = Math
-        .toRadians(Constants.Robot.cameraAngle +
-            RobotContainer.Subsystems.m_driveSubsystem.getGyroPitch());
-    // target height - camera height
-    double dh = Constants.Field.speakerTagHeight - Constants.Robot.cameraHeight;
-    return dh / Math.tan(Math.toRadians(y + pitch));
+    return (Constants.Field.speakerTagHeight-Constants.Robot.limelightHeight)/(Math.tan((Math.toRadians(y+Constants.Robot.limelightAngle))));
   }
   public double calcVerticalDistanceSource() {
 
-    double pitch = Math
-        .toRadians(Constants.Robot.cameraAngle +
-            RobotContainer.Subsystems.m_driveSubsystem.getGyroPitch());
+    double pitch = Constants.Robot.limelightAngle;
     // target height - camera height
-    double dh = Constants.Field.sourceTagHeight - Constants.Robot.cameraHeight;
+    double dh = Constants.Field.speakerTagHeight - Constants.Robot.limelightHeight;
     return dh / Math.tan(Math.toRadians(y + pitch));
   }
 
   @Override
   public void periodic() {
-
+    SmartDashboard.putNumber("limelight distance", calcVerticalDistance());
   }
 }

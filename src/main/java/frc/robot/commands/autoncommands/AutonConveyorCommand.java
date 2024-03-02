@@ -5,6 +5,7 @@
 package frc.robot.commands.autoncommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer.Subsystems;
 
 public class AutonConveyorCommand extends Command {
   /** Creates a new AutonConveyorCommand. */
@@ -19,7 +20,7 @@ public class AutonConveyorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    Subsystems.m_shooterSubsystem.conveyerMotor.set(.6);
   }
 
   // Called once the command ends or is interrupted.
@@ -29,6 +30,7 @@ public class AutonConveyorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    //return false;
+    return Subsystems.m_shooterSubsystem.getPassed();
   }
 }

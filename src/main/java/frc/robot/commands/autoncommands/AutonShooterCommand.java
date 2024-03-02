@@ -29,22 +29,17 @@ public class AutonShooterCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Subsystems.m_shooterSubsystem.changeTargetRPM(topRMP);
+  }
 
 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   
-    if(Subsystems.m_limelightSubsystem.getID()==7 ||  Subsystems.m_limelightSubsystem.getID()==4){
-   RobotContainer.Subsystems.m_shooterSubsystem.shoot();
-    }
-  else if(Subsystems.m_limelightSubsystem.getID()==6 || Subsystems.m_limelightSubsystem.getID()== 5){
-   RobotContainer.Subsystems.m_shooterSubsystem.shoot();
+       Subsystems.m_shooterSubsystem.fullSend();
   }
- 
-}
 
 
   
@@ -58,6 +53,7 @@ public class AutonShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.Subsystems.m_shooterSubsystem.isFinished();
+    SmartDashboard.putBoolean("Is Finished", Subsystems.m_shooterSubsystem.isFinished());
+    return Subsystems.m_shooterSubsystem.isFinished();
   }
 }

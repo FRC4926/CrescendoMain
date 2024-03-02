@@ -22,8 +22,9 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   // public static final double kTurnRateConstant = .7;
   public static class Auton {
-    public static final double subwooferTopRPM = 0;
-    public static final double subwooferBottomRPM = 0;
+    public static final double feedTime = 1;
+    public static final double subwooferTopRPM = 3000;
+    public static final double subwooferBottomRPM = 3000;
   }
 
   public static class CAN_IDS {
@@ -35,18 +36,17 @@ public final class Constants {
     public static final int INTAKE = 8;
     public static final int SHOOTER_TOP = 6;
     public static final int SHOOTER_BOTTOM = 5;
-    public static final int ARM_LEFT = 11;
-    public static final int ARM_RIGHT = 10;
+    public static final int ARM = 7;
 
-    public static final int COLOR_ID = 7;
+    public static final int COLOR_ID = 0;
 
   }
 
-  public static final int kDriverControllerPort = 0;
+  //public static final int kDriverControllerPort = 0;
 
   public class Field {
-    public final static double speakerTagHeight = 51.875;
-    public final static double sourceTagHeight = 48.125;
+    public final static double speakerTagHeight = 56.943;
+    public final static double sourceTagHeight = 20;
   }
 
   public static class Controller {
@@ -56,26 +56,31 @@ public final class Constants {
   }
 
   public static class Robot {
-    public static final double limeLightOffSet = 6;
-    public static final double ksVolts = 0.29328;
+    public static final double SteadySpeedRPM = 2200;
+    public static final double RPMOffset = 400;
+    public static final double slopOffset = 3.4;
+    public static final int shooterTolerance = 30;
+    public static final double intakeEffort = -0.6;
+    public static final double conveyorEffort = .8;
+    public static final double ksVolts = 0;//0.18597; // //// //0.29328;  
     public static final double kaVoltSecondsSquaredPerMeter = 0;
-    public static final double kvVoltSecondsPerMeter = 2.7144;
-    public static final double kTrackwidthMeters = .57;
+    public static final double kvVoltSecondsPerMeter =2.5656; //2.2846;// //2.17882;
+    public static final double kTrackwidthMeters = 0.57; //.67;
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
         kTrackwidthMeters);
-    public static final double kPDriveVel = 0.1884;
+    public static final double subWooferAngle = 35; //Check
+    //public static final double shoulderGearRatio = 10.71;
+    public static final double limeLightOffSet = 6;
+    public static final double kPDriveVel = 0.1884; //0.98;
     public static final double kWheelDiameter = Units.inchesToMeters(6);
     public static final double kGearRatio = 10.86;
     public static final double kLinearDistanceConversionFactor = (Math.PI * kWheelDiameter / kGearRatio);
-    public final static double cameraHeight = 11.5;
-    public final static double cameraAngle = 0;
-    public final static double initialShoulderAngle = 0.488692;
-    public final static double wristAngle = 0;
-    public final static double shoulderGearRatio = 1 / 156;
-    public final static double ampAngle = 909;
-    public final static double subWooferAngle = 0.488692;
-    public final static double shooterP = .1;
-    public static final double shooterMargins = 0;
+    public final static double limelightHeight = 20.911;
+    public final static double limelightAngle = 26;
+    public final static double initialShoulderAngle = -28.5; //Check
+    public final static double shoulderGearRatio = 1.0/100.0; //Check
+    public final static double ampAngle = 81; //Check
+    //public final static double shooterP = .1;
+    //public static final double shooterMargins = 2;
   }
-
 }

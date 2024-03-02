@@ -7,7 +7,11 @@ package frc.robot.autonmodes;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
 import frc.robot.RobotContainer.Subsystems;
+import frc.robot.commands.autoncommands.AutonConveyorCommand;
+import frc.robot.commands.autoncommands.AutonIntakeCommand;
+import frc.robot.commands.autoncommands.AutonShooterCommand;
 import frc.robot.commands.autoncommands.AutonVisionCommand;
 
 public class Left2Note {
@@ -18,10 +22,18 @@ public class Left2Note {
     Trajectory trajectory2 = Subsystems.m_driveSubsystem.getTrajectory("Left2NoteBackward");
 
     return Commands.runOnce(() -> Subsystems.m_driveSubsystem.resetPose(trajectory1.getInitialPose()))
-        .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory1))
+        .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM,Constants.Auton.subwooferBottomRPM))
+        .andThen(Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand()))
+        .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.updateHasPassed()))
+       // .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.intake(0)))
+        .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory1).alongWith(new AutonIntakeCommand()))
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)))
-        .andThen(new AutonVisionCommand())
+        //.deadlineWith(new AutonIntakeCommand())
+        //.andThen(Commands.runOnce(()->Subsystems.m_intakeSubsystem.stop()))
+        //.andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.intake(0)))
         .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory2))
-        .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)));
+        .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)))
+        .andThen(Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand()))
+        .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.zeroMotors())).alongWith(Commands.runOnce(()->Subsystems.m_shooterSubsystem.convey(0)));
   }
 }

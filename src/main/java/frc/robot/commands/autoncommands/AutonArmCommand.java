@@ -34,6 +34,6 @@ public class AutonArmCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.Subsystems.m_armSubsystem.armController.getPositionError()<2 && RobotContainer.Subsystems.m_armSubsystem.armMotor1.getEncoder().getVelocity()<5;
+    return RobotContainer.Subsystems.m_armSubsystem.armController.getPositionError()<2 && RobotContainer.Subsystems.m_armSubsystem.armMotor.getEncoder().getVelocity()<5;
   }
 }

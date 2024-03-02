@@ -7,58 +7,186 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
+
 public class ShooterSubsystem extends SubsystemBase {
- public CANSparkMax bottom = new CANSparkMax(Constants.CAN_IDS.SHOOTER_BOTTOM, MotorType.kBrushless);
- public CANSparkMax top = new CANSparkMax(Constants.CAN_IDS.SHOOTER_TOP, MotorType.kBrushless);
-double desiredRPM = 4900;
-double rpmTolerance = 100;
-SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(-0.73956, 0, 0);
+  private PowerDistribution p = new PowerDistribution(25, ModuleType.kRev);
+  private CANSparkMax lowerMotor = new CANSparkMax(Constants.CAN_IDS.SHOOTER_BOTTOM, MotorType.kBrushless);
+  private CANSparkMax upperMotor = new CANSparkMax(Constants.CAN_IDS.SHOOTER_TOP, MotorType.kBrushless);
+  public CANSparkMax conveyerMotor = new CANSparkMax(Constants.CAN_IDS.CONVEYOR, MotorType.kBrushless);
+  private CANSparkMax intakeMotor = new CANSparkMax(Constants.CAN_IDS.INTAKE, MotorType.kBrushless);
+  //public PIDController  betterController = new PIDController(0.0012,0.00015,0);
+  private PIDController  lowerMotorPIDController = new PIDController(0.01,0,0);
+  private PIDController  upperMotorPIDController = new PIDController(.01,0,0);
+  //SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(-0.73956, 0, 0);
+  private boolean hasPassed = false;
+  private double targetRPM = 5000;
+  private boolean reached = false;
+  private double currentRPM = 0;
+  private boolean override = false;
+  private boolean ampMode = false;
+  Timer timer = new Timer();
+  private DigitalInput colorSensor = new DigitalInput(Constants.CAN_IDS.COLOR_ID);
+  
 
-
-  /** Creates a new DriveSubsystem. */
+  /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
+    hasPassed = false;
+    override = false;
 
-    top.restoreFactoryDefaults();
-    bottom.restoreFactoryDefaults();
-    top.setSmartCurrentLimit(50);
-    bottom.setSmartCurrentLimit(50);
-    top.setIdleMode(IdleMode.kCoast);
-    bottom.setIdleMode(IdleMode.kCoast);
+    lowerMotor.restoreFactoryDefaults();
+    upperMotor.restoreFactoryDefaults();
+    intakeMotor.restoreFactoryDefaults();
+    conveyerMotor.restoreFactoryDefaults();
+    conveyerMotor.setIdleMode(IdleMode.kBrake);
+    intakeMotor.setIdleMode(IdleMode.kBrake);
 
+    intakeMotor.setSmartCurrentLimit(60);
+    conveyerMotor.setSmartCurrentLimit(60);
+
+    lowerMotor.setOpenLoopRampRate(0);
+    upperMotor.setOpenLoopRampRate(0);
+
+    lowerMotor.setIdleMode(IdleMode.kCoast);
+    upperMotor.setIdleMode(IdleMode.kCoast);
+
+    lowerMotor.setSmartCurrentLimit(55);
+    upperMotor.setSmartCurrentLimit(55);
+
+    lowerMotorPIDController.setTolerance(Constants.Robot.shooterTolerance);
+    upperMotorPIDController.setTolerance(Constants.Robot.shooterTolerance);
+    SmartDashboard.putNumber("targetLowerEffort", 0);
+    SmartDashboard.putNumber("targetUpperEffort", 0);
+    SmartDashboard.putNumber("targetLowerRPM", 0);
+    SmartDashboard.putNumber("targetUpperRPM", 0);
+
+  }
+
+  public boolean getAmpMode(){
+    return ampMode;
+  }
+
+  public void setAmpMode(boolean ampMode){
+    this.ampMode = ampMode;
+  }
+
+  public void intake(double effort){
+    intakeMotor.set(effort);
+  }
+  public void convey(double effort){
+    conveyerMotor.set(effort);
+  }
+  public void effortShoot(double lower, double upper) {
+    lowerMotor.set(lower);
+    upperMotor.set(upper);
+  }
+
+  public void changeTargetRPM(double targetRPM){
+    this.targetRPM = targetRPM;
+  }
+ public double getTargetRPM(){
+    return targetRPM;
+  }
+  public void changeOverride()
+  {
+    override = !override;
+  }
+
+  public boolean getOverride()
+  {
+    return override;
+  }
+
+  public void toggleChannel(boolean in)
+  {
+    p.setSwitchableChannel(in);
+  }
+
+  public void setOverride(boolean in)
+  {
+    override = in;
+  }
+
+  public void zeroMotors()
+  {
+    upperMotor.set(0);
+    lowerMotor.set(0);
+  }
+
+  public void RPMShoot(double lower, double upper)
+  { 
+    lowerMotor.setVoltage(lowerMotorPIDController.calculate(lowerMotor.getEncoder().getVelocity(),lower));
+    upperMotor.setVoltage(upperMotorPIDController.calculate(upperMotor.getEncoder().getVelocity(),upper));
+  }
+
+  public void changePassed(boolean in)
+  {
+    hasPassed = in;
+  }
+
+  public boolean getPassed()
+  {
+    return hasPassed;
+  }
+
+  public boolean getColorSensor()
+  {
+    return colorSensor.get();
+  }
+
+  public void fullSend()
+  {
+    upperMotor.setVoltage(-upperMotor.getBusVoltage()*1.2);
+    lowerMotor.setVoltage(-lowerMotor.getBusVoltage()*1.2);
+  }
+  
+  public boolean isFinished()
+  {
+    return (Math.abs(currentRPM) >= Math.abs((targetRPM - Constants.Robot.shooterTolerance)));
+  }
+  public boolean isFinished(double offset)
+  {
+    return (Math.abs(currentRPM)-offset >= Math.abs((targetRPM - Constants.Robot.shooterTolerance)));
+  }
+  public boolean isFinishedAuton() {
+    return (Math.abs(currentRPM) >= Math.abs((Constants.Auton.subwooferTopRPM - Constants.Robot.shooterTolerance)));
+  }
+
+  public void updateHasPassed(){
+    hasPassed = colorSensor.get();
+  }
+  public double lowerRPM()
+  {
+    return lowerMotor.getEncoder().getVelocity();
+  }
+
+  public double upperRPM()
+  {
+    return upperMotor.getEncoder().getVelocity(); 
   }
 
   @Override
   public void periodic() {
+    currentRPM = lowerRPM();
+    //upperBetterController = 
+    SmartDashboard.putNumber("Upper RPM", currentRPM);
+    SmartDashboard.putNumber("Lower RPM", lowerRPM());
+    if(ampMode){
+      targetRPM = 1000;
+    }else{
+      targetRPM = 4500;
+    }
     // This method will be called once per scheduler run
+    
   }
-  PIDController rpmController = new PIDController(0.0012, 0.00015, 0);
-  public void shoot(){
-      bottom.set(shooterFeedForward.calculate(desiredRPM));
-      top.set(shooterFeedForward.calculate(desiredRPM));
-  }
-  public void shootAmp(){
-    bottom.set(-.3);
-    top.set(-.3);
-  }
-  public boolean isFinished(){
-    return top.getEncoder().getVelocity()>desiredRPM-rpmTolerance;
-  }
-  public void idle(){
-    top.set(-.1);
-    bottom.set(-.1);
-  }
-  public void stop(){
-    bottom.set(0);
-    top.set(0);
-  }
- 
-
 }

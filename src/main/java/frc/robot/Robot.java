@@ -5,16 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.proto.Controller;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -24,11 +24,11 @@ import frc.robot.RobotContainer.Commands;
 import frc.robot.RobotContainer.Controllers;
 import frc.robot.RobotContainer.Subsystems;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.IntakeCommand;
+//import frc.robot.commands.IntakeCommand;
 
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to
+ * The VM is configured to automatically run this class, and to call the/
+ * functions corresponding top
  * each mode, as described in the TimedRobot documentation. If you change the
  * name of this class or
  * the package after creating this project, you must also update the
@@ -37,70 +37,52 @@ import frc.robot.commands.IntakeCommand;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  //private PowerDistribution pd;
   private RobotContainer m_robotContainer;
 
-  DoubleLogEntry rpmLogFL;
-  DoubleLogEntry rpmLogFR;
-  DoubleLogEntry rpmLogBL;
-  DoubleLogEntry rpmLogBR;
-
-  DoubleLogEntry currentLogFL;
-  DoubleLogEntry currentLogFR;
-  DoubleLogEntry currentLogBL;
-  DoubleLogEntry currentLogBR;
-
-  DoubleLogEntry voltageLogFL;
-  DoubleLogEntry voltageLogFR;
-  DoubleLogEntry voltageLogBL;
-  DoubleLogEntry voltageLogBR;
-
-  DoubleLogEntry busVoltage;
-  DoubleLogEntry pdVolatage;
-  DoubleLogEntry inputFL;
-  DoubleLogEntry outputFL;
-  PowerDistribution PD = new PowerDistribution();
-
+  //DoubleLogEntry IntakeVelocityLog;
+  // DoubleLogEntry currentLog;
 
   /**
    * This function is run when the robot is first started up and should be used
    * for any
    * initialization code.
    */
+
+   AddressableLED m_led = new AddressableLED(4);
+   AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
+  //  AddressableLED m_led2;
+  //  AddressableLEDBuffer m_ledBuffer2 = new AddressableLEDBuffer(60);
+   //Timer timer = new Timer();
+   //boolean isGreen = false;
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
-    DataLogManager.start();
-    DataLog log = DataLogManager.getLog();
-    rpmLogFL = new DoubleLogEntry(log, "RPM-FL");
-    rpmLogBL = new DoubleLogEntry(log, "RPM-BL");
-    rpmLogFR = new DoubleLogEntry(log, "RPM-FR");
-    rpmLogBR = new DoubleLogEntry(log, "RPM-BR");
-
-    currentLogFL = new DoubleLogEntry(log, "Current-FL");
-    currentLogBL = new DoubleLogEntry(log, "Current-BL");
-    currentLogFR = new DoubleLogEntry(log, "Current-FR");
-    currentLogBR = new DoubleLogEntry(log, "Current-BR");
     
-    currentLogFL = new DoubleLogEntry(log, "Current-FL");
-    currentLogBL = new DoubleLogEntry(log, "Current-BL");
-    currentLogFR = new DoubleLogEntry(log, "Current-FR");
-    currentLogBR = new DoubleLogEntry(log, "Current-BR");
+    m_led.setLength(m_ledBuffer.getLength());
 
-    voltageLogFL = new DoubleLogEntry(log, "Voltage-FL");
-    voltageLogBL = new DoubleLogEntry(log, "Voltage-BL");
-    voltageLogFR = new DoubleLogEntry(log, "Voltage-FR");
-    voltageLogBR = new DoubleLogEntry(log, "Voltage-BR");
+    // // Set the data
+    m_led.setData(m_ledBuffer);
+    m_led.start();
+    // m_led2 = new AddressableLED(9);
+    
+    // m_ledBuffer2 = new AddressableLEDBuffer(61);
+    // m_led2.setLength(m_ledBuffer.getLength());
 
-    busVoltage = new DoubleLogEntry(log, "BusVoltage");
-    inputFL = new DoubleLogEntry(log, "Input-FL");
-    pdVolatage = new DoubleLogEntry(log, "pdVoltage");
-    outputFL = new DoubleLogEntry(log, "Output-FL");
+    // // Set the data
+    // m_led2.setData(m_ledBuffer);
+    // m_led2.start();
 
+    //timer.start();
+    m_robotContainer = new RobotContainer();
+
+    //DataLogManager.start();
+    //DataLog log = DataLogManager.getLog();
+    //IntakeVelocityLog = new DoubleLogEntry(log, "Intake Velocity");
+    //currentLog = new DoubleLogEntry(log, "Current");
   }
 
   /**
@@ -115,6 +97,36 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    Subsystems.m_limelightSubsystem.updateLimelight();
+    SmartDashboard.putNumber("Y", Subsystems.m_limelightSubsystem.y);
+    SmartDashboard.putBoolean("color Sensor", Subsystems.m_shooterSubsystem.getColorSensor());
+    SmartDashboard.putNumber("Lime Dist", Subsystems.m_limelightSubsystem.calcVerticalDistance());
+    SmartDashboard.putNumber("Arm Angle", Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition());
+    if(Controllers.m_driverController.getBButtonReleased())
+    {
+
+      Subsystems.m_shooterSubsystem.toggleChannel(false);
+
+    } else 
+    {
+
+      Subsystems.m_shooterSubsystem.toggleChannel(true);
+      
+    }
+
+    // if (timer.get() % 1 < 0.02) {
+    //   isGreen = !isGreen;
+    // }
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      if (Subsystems.m_shooterSubsystem.getPassed()) {
+          m_ledBuffer.setRGB(i, 0, 255, 0);
+      }
+      else{
+                  m_ledBuffer.setRGB(i, 100, 0, 100);
+      }   
+            
+    }
+    m_led.setData(m_ledBuffer);
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
@@ -130,11 +142,12 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    Subsystems.m_driveSubsystem.setBrakeMode();
+    //Subsystems.m_driveSubsystem.setBrakeMode();
   }
 
   @Override
   public void disabledPeriodic() {
+    //Subsystems.m_shooterSubsystem.toggleChannel(false);
   }
 
   /**
@@ -157,23 +170,16 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-
+    SmartDashboard.putNumber("top", Subsystems.m_shooterSubsystem.upperRPM());
+    SmartDashboard.putNumber("GetX", Subsystems.m_driveSubsystem.getOdometry().getPoseMeters().getX());
+    
+    SmartDashboard.putNumber("GetY", Subsystems.m_driveSubsystem.getOdometry().getPoseMeters().getY());
   }
 
   @Override
   public void teleopInit() {
-    //    AddressableLED m_led = new AddressableLED(9);
-    //   AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
-    //   m_led.setLength(m_ledBuffer.getLength());
-
-    //   m_led.setData(m_ledBuffer);
-    //   m_led.start();
-    //   for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-    //     // Sets the specified LED to the RGB values for red
-    //     m_ledBuffer.setRGB(i, 255, 0, 0);
-    //  }
-     
-    //  m_led.setData(m_ledBuffer);
+    Subsystems.m_armSubsystem.armMotor.getEncoder().setPosition(-30.9*(Math.PI/180));
+    //RobotContainer.Subsystems.m_intakeSubsystem.flashlight(true);
     // Subsystems.m_driveSubsystem.driverControlled = true;
     //Subsystems.m_driveSubsystem.nullRampRates();
     Subsystems.m_driveSubsystem.setCurrentLimits(35);
@@ -186,47 +192,39 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    //Subsystems.m_armSubsystem.armMotor.getEncoder().setPosition(Constants.Robot.initialShoulderAngle-Constants.Robot.slopOffset);
     Subsystems.m_driveSubsystem.resetEncoders();
     Subsystems.m_driveSubsystem.resetGyro();
-    Subsystems.m_driveSubsystem.nullRampRates();
+    Subsystems.m_shooterSubsystem.changePassed(false);
+    //Subsystems.m_driveSubsystem.nullRampRates();
     Subsystems.m_driveSubsystem.setBrakeMode();
-    // RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
+    //RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
 
     // Subsystems.m_driveSubsystem.pidControllerSetUp();
 
     // Drives Robot
     CommandScheduler.getInstance().schedule(Commands.m_driveCommand);
+    //CommandScheduler.getInstance().schedule(Commands.m_armTestCommand);
+    CommandScheduler.getInstance().schedule(Commands.m_armTestCommand);
+    //CommandScheduler.getInstance().schedule(Commands.m_shooterCommand);
+    CommandScheduler.getInstance().schedule(Commands.m_shooterCommand2);
 
-   CommandScheduler.getInstance().schedule(Commands.m_intakeCommand);
+    CommandScheduler.getInstance().schedule(Commands.m_visionCommand);
+  //  CommandScheduler.getInstance().schedule(Commands.m_intakeCommand);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    RobotContainer.Controllers.m_driverController.setRumble(RumbleType.kBothRumble, .1);
-    SmartDashboard.putNumber("Effort", Subsystems.m_intakeSubsystem.intake.getOutputCurrent());
-    // rpmLogFL.append(Subsystems.m_driveSubsystem.frontLeftMotor.getEncoder().getVelocity()/(Constants.Robot.kLinearDistanceConversionFactor / 60));
-    // rpmLogBL.append(Subsystems.m_driveSubsystem.backLeftMotor.getEncoder().getVelocity()/(Constants.Robot.kLinearDistanceConversionFactor / 60));
-    // rpmLogFR.append(Subsystems.m_driveSubsystem.frontRightMotor.getEncoder().getVelocity()/(Constants.Robot.kLinearDistanceConversionFactor / 60));
-    // rpmLogBR.append(Subsystems.m_driveSubsystem.backRightMotor.getEncoder().getVelocity()/(Constants.Robot.kLinearDistanceConversionFactor / 60));
-  
-    // currentLogFL.append(Subsystems.m_driveSubsystem.frontLeftMotor.getOutputCurrent());
-    // currentLogBL.append(Subsystems.m_driveSubsystem.backLeftMotor.getOutputCurrent());
-    // currentLogFR.append(Subsystems.m_driveSubsystem.frontRightMotor.getOutputCurrent());
-    // currentLogBR.append(Subsystems.m_driveSubsystem.backRightMotor.getOutputCurrent());
-    // voltageLogFL.append(Subsystems.m_driveSubsystem.frontLeftMotor.getBusVoltage() * Subsystems.m_driveSubsystem.frontLeftMotor.getAppliedOutput());
-    // voltageLogBL.append(Subsystems.m_driveSubsystem.backLeftMotor.getBusVoltage() * Subsystems.m_driveSubsystem.backLeftMotor.getAppliedOutput());
-    // voltageLogFR.append(Subsystems.m_driveSubsystem.frontRightMotor.getBusVoltage() * Subsystems.m_driveSubsystem.frontRightMotor.getAppliedOutput());
-    // voltageLogBR.append(Subsystems.m_driveSubsystem.backRightMotor.getBusVoltage() * Subsystems.m_driveSubsystem.backRightMotor.getAppliedOutput());
-
-    // busVoltage.append(Subsystems.m_driveSubsystem.frontLeftMotor.getBusVoltage());
-    // pdVolatage.append(PD.getVoltage());
-    // inputFL.append(Controllers.m_driverController.getLeftY()*Subsystems.m_driveSubsystem.backRightMotor.getBusVoltage()*1.2);
-    // outputFL.append( Subsystems.m_driveSubsystem.frontLeftMotor.getAppliedOutput());
-    // inputFR.append(Subsystems.m_driveSubsystem.frontRightMotor.getBusVoltage() * Controllers.m_driverController.getLeftY());
-    // inputBR.append(Subsystems.m_driveSubsystem.backRightMotor.getBusVoltage() * Controllers.m_driverController.getLeftY());
-
-    
+    SmartDashboard.putNumber("Input Voltage", Subsystems.m_armSubsystem.ff.calculate(0, 1));
+    SmartDashboard.putNumber("PID", Subsystems.m_armSubsystem.armController.calculate(Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition(), 0));
+    SmartDashboard.putNumber("Target Angle", Subsystems.m_armSubsystem.targetAngle);
+    SmartDashboard.putNumber("Angle", Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("AngleD", Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition()*(180/Math.PI));
+    //IntakeVelocityLog.append(Subsystems.m_intakeSubsystem.intake.getEncoder().getVelocity());
+    //SmartDashboard.putNumber("Effort", Subsystems.m_intakeSubsystem.intakeVel());
+    //rpmLog.append(Subsystems.m_driveSubsystem.getAverageRPM());
+    //currentLog.append(Subsystems.m_driveSubsystem.getAverageCurrent());
   }
 
   @Override
@@ -240,6 +238,12 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    Subsystems.m_armSubsystem.armMotor.set(0.09);
+    //SmartDashboard.putBoolean("detect", Subsystems.m_shooterSubsystem.colorSensor.get());
+    // Subsystems.m_intakeSubsystem.intake.set(-.8);
+    // Subsystems.m_intakeSubsystem.conveyor.set(.9);
+    // Subsystems.m_shooterSubsystem.fullp
+
   }
 
   /** This function is called once when the robot is first started up. */

@@ -4,13 +4,14 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
-public class IntakeCommand extends Command {
-  /** Creates a new IntakeCommand. */
-  public IntakeCommand() {
+public class ArmCommand extends Command {
+  boolean manualControl = false;
+
+  /** Creates a new ArmCommand. */
+  public ArmCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -22,16 +23,20 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      RobotContainer.Subsystems.m_intakeSubsystem.displaySensor();
-    if (RobotContainer.Controllers.m_driverController.getLeftTriggerAxis()>.2) {
-      RobotContainer.Subsystems.m_intakeSubsystem.intake();
-    } 
-    else if(RobotContainer.Controllers.m_driverController.getRightTriggerAxis()>.2){
-            RobotContainer.Subsystems.m_intakeSubsystem.outTake();
+    if (RobotContainer.Controllers.m_operatorController.getAButton() && !manualControl) {
+      RobotContainer.Subsystems.m_armSubsystem.adjustArmShooterAngle();
+    } else if (RobotContainer.Controllers.m_operatorController.getBButton()) {
+      manualControl = !manualControl;
+    } else if(!manualControl)
+    {
+      RobotContainer.Subsystems.m_armSubsystem.goToHome();
     }
-    else {
-      RobotContainer.Subsystems.m_intakeSubsystem.stop();
+    
+    if (manualControl) {
+      RobotContainer.Subsystems.m_armSubsystem
+          .manualControl(Math.pow(RobotContainer.Controllers.m_operatorController.getLeftY(), 2));
     }
+
   }
 
   // Called once the command ends or is interrupted.

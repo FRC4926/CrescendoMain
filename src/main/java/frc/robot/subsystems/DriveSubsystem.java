@@ -206,12 +206,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void drive(double forward, double rotate) {
     if(frontLeftMotor.getEncoder().getVelocity()<2000){
-      frontLeftMotor.setSmartCurrentLimit(40);
-      backLeftMotor.setSmartCurrentLimit(40);
+      frontLeftMotor.setSmartCurrentLimit(60);
+      backLeftMotor.setSmartCurrentLimit(60);
     }
     else{
-            frontLeftMotor.setSmartCurrentLimit(60);
-            backLeftMotor.setSmartCurrentLimit(60);
+            frontLeftMotor.setSmartCurrentLimit(80);
+            backLeftMotor.setSmartCurrentLimit(80);
     }
         if(frontRightMotor.getEncoder().getVelocity()<2000){
       frontRightMotor.setSmartCurrentLimit(40);

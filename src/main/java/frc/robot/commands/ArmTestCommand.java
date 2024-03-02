@@ -4,8 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 import frc.robot.RobotContainer.Controllers;
 import frc.robot.RobotContainer.Subsystems;
 
@@ -17,31 +19,38 @@ public class ArmTestCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    SmartDashboard.putNumber("ArmAAngle", 0);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(Math.abs(Controllers.m_operatorController.getLeftY())>.05){
-            Subsystems.m_armSubsystem.manualControl(Controllers.m_operatorController.getLeftY());
-    }
-    else if(Controllers.m_operatorController.getAButton()){
-      Subsystems.m_armSubsystem.goToSpecifiedAngle(0);
-    }
-    else if(Controllers.m_operatorController.getBButton()){
-      Subsystems.m_armSubsystem.goToHome();
-    }
-    else if(Controllers.m_operatorController.getYButton()){
+    if (Math.abs(Controllers.m_operatorController.getLeftY()) > Constants.Controller.deadband) {
+      Subsystems.m_armSubsystem.manualControl((-Controllers.m_operatorController.getLeftY()/4));
+    } else if (Controllers.m_operatorController.getAButton()) {
+      // if (Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition() <= (Math.PI/3))
+      // {
+        Subsystems.m_armSubsystem.goToSpecifiedAngle(70);
+      // } else 
+      // {
+      //   Subsystems.m_armSubsystem.armMotor.set(0);
+      // }
+    } else if (Controllers.m_operatorController.getBButton()) {
+      Subsystems.m_armSubsystem.goToSpecifiedAngle(SmartDashboard.getNumber("ArmAAngle", 0));
+    } else if (Controllers.m_operatorController.getYButton()) {
       Subsystems.m_armSubsystem.adjustArmAmpAngle();
     }
     else{
-      Subsystems.m_armSubsystem.adjustArmAmpAngle();
+      //Subsystems.m_shooterSubsystem.changePassed(Subsystems.m_shooterSubsystem.getColorSensor());
+      Subsystems.m_armSubsystem.goToSpecifiedAngle(-33.9);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
