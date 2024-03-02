@@ -37,6 +37,7 @@ public final class Constants {
     public static final int SHOOTER_TOP = 6;
     public static final int SHOOTER_BOTTOM = 5;
     public static final int ARM = 7;
+    public static final int CLIMBER = 12;
 
     public static final int COLOR_ID = 0;
 
@@ -80,6 +81,7 @@ public final class Constants {
     public final static double initialShoulderAngle = -28.5; //Check
     public final static double shoulderGearRatio = 1.0/100.0; //Check
     public final static double ampAngle = 81; //Check
+    public final static double climberMaxEncoderPosition = 909;
     //public final static double shooterP = .1;
     //public static final double shooterMargins = 2;
   }

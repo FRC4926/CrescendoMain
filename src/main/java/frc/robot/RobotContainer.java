@@ -20,6 +20,7 @@ import frc.robot.commands.DriveCommand;
 //import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 //import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -51,6 +52,7 @@ public class RobotContainer {
     //public final static VisionSubsystem m_visionSubsystem = new VisionSubsystem();
    // public final static IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     public final static ArmSubsystem m_armSubsystem = new ArmSubsystem();
+    public final static ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   }
 
   // The Commands are stored here

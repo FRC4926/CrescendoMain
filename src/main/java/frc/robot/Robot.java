@@ -11,6 +11,8 @@ import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -183,7 +185,7 @@ public class Robot extends TimedRobot {
     // Subsystems.m_driveSubsystem.driverControlled = true;
     //Subsystems.m_driveSubsystem.nullRampRates();
     Subsystems.m_driveSubsystem.setCurrentLimits(35);
-    
+    Subsystems.m_climberSubsystem.resetEncoders();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -212,8 +214,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().schedule(Commands.m_visionCommand);
   //  CommandScheduler.getInstance().schedule(Commands.m_intakeCommand);
   }
-
-  /** This function is called periodically during operator control. */
+DigitalInput input = new DigitalInput(0);
+// Rev2mDistanceSensor sensor = new Rev2mDistanceSensor(Port.kMXP); 
+/** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Input Voltage", Subsystems.m_armSubsystem.ff.calculate(0, 1));
