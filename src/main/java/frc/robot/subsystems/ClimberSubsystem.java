@@ -12,15 +12,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ClimberSubsystem extends SubsystemBase {
-  
-  CANSparkMax climber = new CANSparkMax(Constants.CAN_IDS.CLIMBER,MotorType.kBrushless);
+
+  public CANSparkMax climber = new CANSparkMax(Constants.CAN_IDS.CLIMBER, MotorType.kBrushless);
+
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
     climber.setIdleMode(IdleMode.kBrake);
     climber.setSmartCurrentLimit(40);
-
+    //climber.setInverted(true);
   }
-  public void resetEncoders(){
+
+  public void resetEncoders() {
     climber.getEncoder().setPosition(0);
   }
 
@@ -29,14 +31,12 @@ public class ClimberSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void climb(double effort){
-    if(climber.getEncoder().getPosition()<4 && effort<0){
+  public void climb(double effort) {
+    if (climber.getEncoder().getPosition() > -20 && effort > 0) {
       climber.set(0);
-    }
-    else if(climber.getEncoder().getPosition()>Constants.Robot.climberMaxEncoderPosition -4 && effort>0){
+    } else if (climber.getEncoder().getPosition() < Constants.Robot.climberMaxEncoderPosition && effort < 0) {
       climber.set(0);
-    }
-    else{
+    } else {
       climber.set(effort);
     }
   }

@@ -92,6 +92,7 @@ public class ShooterCommand extends Command {
     } else {
       //Rev at steady speed
       if(!Subsystems.m_shooterSubsystem.getOverride()){
+        //Subsystems.m_shooterSubsystem.zeroMotors();
         Subsystems.m_shooterSubsystem.RPMShoot(-(Constants.Robot.SteadySpeedRPM+Constants.Robot.RPMOffset), (-Constants.Robot.SteadySpeedRPM+Constants.Robot.RPMOffset));
       }else{
         // if it's in overide, don't rev at steady state

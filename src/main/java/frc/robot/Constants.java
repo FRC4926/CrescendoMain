@@ -57,8 +57,8 @@ public final class Constants {
   }
 
   public static class Robot {
-    public static final double SteadySpeedRPM = 2200;
-    public static final double RPMOffset = 400;
+    public static final double SteadySpeedRPM = 2500;
+    public static final double RPMOffset = 500;
     public static final double slopOffset = 3.4;
     public static final int shooterTolerance = 30;
     public static final double intakeEffort = -0.6;
@@ -81,7 +81,7 @@ public final class Constants {
     public final static double initialShoulderAngle = -28.5; //Check
     public final static double shoulderGearRatio = 1.0/100.0; //Check
     public final static double ampAngle = 81; //Check
-    public final static double climberMaxEncoderPosition = 909;
+    public final static double climberMaxEncoderPosition = -640;
     //public final static double shooterP = .1;
     //public static final double shooterMargins = 2;
   }

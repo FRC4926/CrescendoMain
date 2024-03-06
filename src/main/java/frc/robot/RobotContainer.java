@@ -15,6 +15,7 @@ import frc.robot.autonmodes.Right2Note;
 import frc.robot.autonmodes.Right3Note;
 import frc.robot.commands.VisionCommand;
 import frc.robot.commands.ArmTestCommand;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.DriveCommand;
 //import frc.robot.commands.IntakeCommand;
 //import frc.robot.commands.ShooterCommand;
@@ -63,7 +64,7 @@ public class RobotContainer {
     public final static VisionCommand m_visionCommand = new VisionCommand();
     public final static ShooterCommand m_shooterCommand2 = new ShooterCommand();
     
-    //public final static IntakeCommand m_intakeCommand = new IntakeCommand();
+    public final static ClimberCommand m_climberCommand = new ClimberCommand();
   }
 
   // our controllers are stored here

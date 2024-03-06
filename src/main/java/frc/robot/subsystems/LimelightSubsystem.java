@@ -96,7 +96,7 @@ return Math.abs(Math.atan(Constants.Robot.limeLightOffSet/calcVerticalDistance()
   }
 
   public double calcVerticalDistance() {
-    return (Constants.Field.speakerTagHeight-Constants.Robot.limelightHeight)/(Math.tan((Math.toRadians(y+Constants.Robot.limelightAngle))));
+    return (Constants.Field.speakerTagHeight-Constants.Robot.limelightHeight)/(Math.tan((Math.toRadians(y+Constants.Robot.limelightAngle))))-4.5;
   }
   public double calcVerticalDistanceSource() {
 

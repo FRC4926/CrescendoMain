@@ -38,7 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
   //ArmFeedforward ff = new ArmFeedforward(0, 1.32, 1.95, 0.07);
   public ArmFeedforward ff = new ArmFeedforward(0, 1.50, 0, 0);
   public CANSparkMax armMotor = new CANSparkMax(Constants.CAN_IDS.ARM, MotorType.kBrushless);
-
+  public int slackBool = 1;
   public double angle = armMotor.getEncoder().getPosition();
   public PIDController armController = new PIDController(p, i, d);
   private LookUpTableShooterAngles angles = new LookUpTableShooterAngles();
@@ -64,7 +64,10 @@ public class ArmSubsystem extends SubsystemBase {
     // armMotor2.getEncoder().setPosition(Constants.Robot.initialShoulderAngle);
 
   }
-
+  public void changeSlackBool(int x){
+    slackBool = x;
+  }
+  
   public double getArmDesiredAngle() {
     if (RobotContainer.Subsystems.m_limelightSubsystem.id == 7
         || RobotContainer.Subsystems.m_limelightSubsystem.id == 4)
@@ -143,7 +146,7 @@ public class ArmSubsystem extends SubsystemBase {
     targetAngle = angle;
     // Controllers.m_operatorController.setRumble(RumbleType.kBothRumble, 0);
     armController.setSetpoint(targetAngle);
-    armMotor.setVoltage(armController.calculate(armMotor.getEncoder().getPosition(), targetAngle) + ff.calculate(targetAngle, ffVelocity));
+    armMotor.setVoltage(slackBool*(armController.calculate(armMotor.getEncoder().getPosition(), targetAngle) + ff.calculate(targetAngle, ffVelocity)));
 
   }
 
