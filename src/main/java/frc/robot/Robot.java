@@ -186,7 +186,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     Subsystems.m_armSubsystem.armMotor.setIdleMode(IdleMode.kBrake);
     Subsystems.m_climberSubsystem.resetEncoders();
-    Subsystems.m_armSubsystem.armMotor.getEncoder().setPosition(-30.9 * (Math.PI / 180));
+    Subsystems.m_armSubsystem.resetTimer();
+    //Subsystems.m_armSubsystem.armMotor.getEncoder().setPosition(-30.9 * (Math.PI / 180));
     // RobotContainer.Subsystems.m_intakeSubsystem.flashlight(true);
     // Subsystems.m_driveSubsystem.driverControlled = true;
     // Subsystems.m_driveSubsystem.nullRampRates();
@@ -258,7 +259,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
         
-    Subsystems.m_armSubsystem.armMotor.set(0.09);
+    //Subsystems.m_armSubsystem.armMotor.set(0.09);
     //SmartDashboard.putNumber("Climber Encoder", Subsystems.m_climberSubsystem.climber.getEncoder().getPosition());
     // SmartDashboard.putBoolean("detect",
     // Subsystems.m_shooterSubsystem.colorSensor.get());

@@ -14,6 +14,7 @@ import frc.robot.RobotContainer.Subsystems;
 import frc.robot.commands.autoncommands.AutonConveyorCommand;
 import frc.robot.commands.autoncommands.AutonIntakeCommand;
 import frc.robot.commands.autoncommands.AutonShooterCommand;
+import frc.robot.commands.autoncommands.AutonSlackinatorCommand;
 import frc.robot.commands.autoncommands.AutonVisionCommand;
 
 public class Center1Note {
@@ -23,7 +24,7 @@ public class Center1Note {
     Trajectory trajectory1 = Subsystems.m_driveSubsystem.getTrajectory("ShortTaxi");
 
     return Commands.runOnce(() -> Subsystems.m_driveSubsystem.resetPose(trajectory1.getInitialPose()))
-        .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM, Constants.Auton.subwooferBottomRPM))
+        .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM, Constants.Auton.subwooferBottomRPM).deadlineWith(new AutonSlackinatorCommand()))
         .andThen(Commands.waitSeconds(Constants.Auton.feedTime)
         .deadlineWith(new AutonConveyorCommand()))
         .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.zeroMotors()).alongWith(Commands.runOnce(()->Subsystems.m_shooterSubsystem.convey(0))))

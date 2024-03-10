@@ -5,36 +5,32 @@
 package frc.robot.commands.autoncommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.Subsystems;
 
-public class AutonArmCommand extends Command {
-  double targetAngle = 0;
-
-  /** Creates a new ArmCommand. */
-  public AutonArmCommand(double targetAngle) {
-    this.targetAngle = targetAngle;
+public class AutonSlackinatorCommand extends Command {
+  /** Creates a new AutonSlackinatorCommand. */
+  public AutonSlackinatorCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      RobotContainer.Subsystems.m_armSubsystem.goToSpecifiedAngle(targetAngle);
+    Subsystems.m_armSubsystem.armMotor.set(0.06);
+    Subsystems.m_armSubsystem.armMotor.getEncoder().setPosition(-30.9 * (Math.PI / 180));
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.Subsystems.m_armSubsystem.armController.getPositionError()<2 && RobotContainer.Subsystems.m_armSubsystem.armMotor.getEncoder().getVelocity()<5;
+    return false;
   }
 }

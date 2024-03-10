@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.proto.Controller;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -38,7 +39,7 @@ public class ArmTestCommand extends Command {
     } else if (Controllers.m_operatorController.getBButton()) {
       Subsystems.m_armSubsystem.goToSpecifiedAngle(SmartDashboard.getNumber("ArmAAngle", -27.5));
     }else{
-      if(Controllers.m_operatorController.getYButton()){
+      if(!Subsystems.m_armSubsystem.slackOver() || Controllers.m_operatorController.getYButton()){
         //Subsystems.m_armSubsystem.changeSlackBool(0);
         Subsystems.m_armSubsystem.armMotor.set(0.06);
         Subsystems.m_armSubsystem.armMotor.getEncoder().setPosition(-30.9 * (Math.PI / 180));

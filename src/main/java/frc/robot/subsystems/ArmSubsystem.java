@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog.State;
@@ -27,6 +28,8 @@ import frc.robot.RobotContainer.Controllers;
 import frc.robot.util.LookUpTableShooterAngles;
 
 public class ArmSubsystem extends SubsystemBase {
+  Timer timer = new Timer();
+  
   /** Creates a new ArmSubsystem. */
   double p = 9;
   double i = 0;
@@ -63,6 +66,13 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor.setSmartCurrentLimit(60);
     // armMotor2.getEncoder().setPosition(Constants.Robot.initialShoulderAngle);
 
+  }
+  public void resetTimer(){
+    timer.reset();
+    timer.start();
+  }
+  public boolean slackOver(){
+    return timer.get()>1;
   }
   public void changeSlackBool(int x){
     slackBool = x;
@@ -188,6 +198,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if(slackOver()){
+      timer.stop();
+    }
     // This method will be called once per scheduler run
   }
 

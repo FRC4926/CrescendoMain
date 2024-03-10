@@ -28,16 +28,16 @@ public final class Constants {
   }
 
   public static class CAN_IDS {
-    public static final int FRONT_LEFT_DRIVE = 1;
-    public static final int BACK_LEFT_DRIVE = 2;
-    public static final int FRONT_RIGHT_DRIVE = 3;
-    public static final int BACK_RIGHT_DRIVE = 4;
-    public static final int CONVEYOR = 9;
-    public static final int INTAKE = 8;
-    public static final int SHOOTER_TOP = 6;
-    public static final int SHOOTER_BOTTOM = 5;
-    public static final int ARM = 7;
-    public static final int CLIMBER = 12;
+    public static final int FRONT_LEFT_DRIVE = 6;
+    public static final int BACK_LEFT_DRIVE = 7;
+    public static final int FRONT_RIGHT_DRIVE = 2;
+    public static final int BACK_RIGHT_DRIVE = 3;
+    public static final int CONVEYOR = 10;
+    public static final int INTAKE = 1;
+    public static final int SHOOTER_TOP = 9;
+    public static final int SHOOTER_BOTTOM = 8;
+    public static final int ARM = 4;
+    public static final int CLIMBER = 5;
 
     public static final int COLOR_ID = 0;
 
