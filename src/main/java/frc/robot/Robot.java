@@ -116,7 +116,6 @@ public class Robot extends TimedRobot {
       Subsystems.m_shooterSubsystem.toggleChannel(false);
 
     } else {
-
       Subsystems.m_shooterSubsystem.toggleChannel(true);
 
     }
@@ -142,7 +141,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    SmartDashboard.putString("Alliance", DriverStation.getAlliance().get().toString());
+   // SmartDashboard.putString("Alliance", DriverStation.getAlliance().get().toString());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -187,7 +186,8 @@ public class Robot extends TimedRobot {
     Subsystems.m_armSubsystem.armMotor.setIdleMode(IdleMode.kBrake);
     Subsystems.m_climberSubsystem.resetEncoders();
     Subsystems.m_armSubsystem.resetTimer();
-    //Subsystems.m_armSubsystem.armMotor.getEncoder().setPosition(-30.9 * (Math.PI / 180));
+
+    Subsystems.m_armSubsystem.armMotor.getEncoder().setPosition(-30.9 * (Math.PI / 180));
     // RobotContainer.Subsystems.m_intakeSubsystem.flashlight(true);
     // Subsystems.m_driveSubsystem.driverControlled = true;
     // Subsystems.m_driveSubsystem.nullRampRates();

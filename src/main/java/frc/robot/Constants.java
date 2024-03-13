@@ -23,8 +23,8 @@ public final class Constants {
   // public static final double kTurnRateConstant = .7;
   public static class Auton {
     public static final double feedTime = 1;
-    public static final double subwooferTopRPM = 3000;
-    public static final double subwooferBottomRPM = 3000;
+    public static final double subwooferTopRPM = 2500;
+    public static final double subwooferBottomRPM = 2500;
   }
 
   public static class CAN_IDS {

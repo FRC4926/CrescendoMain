@@ -14,7 +14,7 @@ import frc.robot.util.GalacPIDController;
 public class VisionCommand extends Command {
   double turnEffort;
   double driveEffort;
-  GalacPIDController alignPidController = new GalacPIDController(0.015, 0, 0, 0.1, () -> RobotContainer.Subsystems.m_limelightSubsystem.getX(), 0, 2);
+  GalacPIDController alignPidController = new GalacPIDController(0.015, 0, 0, 0.2, () -> RobotContainer.Subsystems.m_limelightSubsystem.getX(), 0, 5);
 
   /** Creates a new AprilTagAlignmentCommand. */
   public VisionCommand() {

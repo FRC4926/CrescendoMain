@@ -340,7 +340,12 @@ public class DriveSubsystem extends SubsystemBase {
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory: " + ex.getMessage(), ex.getStackTrace());
     }
-
+    
+    try {
+      return TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("paths/" + "Red" + filePath + ".wpilib.json"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return null;
   }
 

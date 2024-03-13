@@ -38,13 +38,8 @@ public class AutonShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-       Subsystems.m_shooterSubsystem.fullSend();
+      Subsystems.m_shooterSubsystem.fullSend();
   }
-
-
-  
-
-
 
   // Called once the command ends or is interrupted.
   @Override
@@ -54,6 +49,6 @@ public class AutonShooterCommand extends Command {
   @Override
   public boolean isFinished() {
     SmartDashboard.putBoolean("Is Finished", Subsystems.m_shooterSubsystem.isFinished());
-    return Subsystems.m_shooterSubsystem.isFinished();
+    return Subsystems.m_shooterSubsystem.isFinishedAuton(bottomRPM);
   }
 }

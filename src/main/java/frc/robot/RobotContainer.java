@@ -88,7 +88,7 @@ public class RobotContainer {
 
     m_chooser.setDefaultOption("Center2Note", Center2Note.getCommand());
     m_chooser.addOption("ShortTaxi", Center1Note.getCommand());
-    //m_chooser.addOption("Left2Note", Left2Note.getCommand());
+    m_chooser.addOption("Left2Note", Left2Note.getCommand());
     //m_chooser.addOption("Right2Note", Left2Note.getCommand());
     m_chooser.addOption("Left3Note", Left3Note.getCommand());
     //m_chooser.addOption("Left4Note", Left4Note.getCommand());

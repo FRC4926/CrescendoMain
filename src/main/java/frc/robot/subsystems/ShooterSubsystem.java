@@ -149,6 +149,11 @@ public class ShooterSubsystem extends SubsystemBase {
     upperMotor.setVoltage(-upperMotor.getBusVoltage()*1.2);
     lowerMotor.setVoltage(-lowerMotor.getBusVoltage()*1.2);
   }
+
+  public boolean isFinishedAuton(double target)
+  {
+    return (Math.abs(currentRPM) >= Math.abs((target - Constants.Robot.shooterTolerance)));
+  }
   
   public boolean isFinished()
   {

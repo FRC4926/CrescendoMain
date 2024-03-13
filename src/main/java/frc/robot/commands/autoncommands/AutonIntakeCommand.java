@@ -25,6 +25,7 @@ public class AutonIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+        Subsystems.m_shooterSubsystem.updateHasPassed();
         Subsystems.m_shooterSubsystem.intake(Constants.Robot.intakeEffort);
         Subsystems.m_shooterSubsystem.convey(Constants.Robot.conveyorEffort);
         // RobotContainer.Subsystems.m_intakeSubsystem.runIntake(.5);
@@ -43,7 +44,11 @@ public class AutonIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Subsystems.m_shooterSubsystem.getColorSensor();
+    if(Subsystems.m_shooterSubsystem.getPassed()){
+      Subsystems.m_shooterSubsystem.intake(0);
+      Subsystems.m_shooterSubsystem.convey(0);
+    }
+    return Subsystems.m_shooterSubsystem.getPassed();
     //return Subsystems.m_intakeSubsystem.shouldIntakeStop();
   }
 }
