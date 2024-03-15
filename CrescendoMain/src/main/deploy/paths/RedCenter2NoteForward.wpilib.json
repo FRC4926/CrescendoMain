@@ -1,0 +1,257 @@
+[
+{
+"acceleration": 3.0,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.853307636446479,
+"y": 5.6
+}
+},
+"time": 0.0,
+"velocity": 0.0
+},
+{
+"acceleration": 3.0,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.789694668534082,
+"y": 5.6
+}
+},
+"time": 0.20593359433305428,
+"velocity": 0.6178007829991629
+},
+{
+"acceleration": 3.0000000000000013,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.720253691518945,
+"y": 5.6
+}
+},
+"time": 0.29782986746075224,
+"velocity": 0.8934896023822567
+},
+{
+"acceleration": 3.0,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.641338611036295,
+"y": 5.6
+}
+},
+"time": 0.3759157932393761,
+"velocity": 1.1277473797181283
+},
+{
+"acceleration": 2.999999999999999,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.551370409841546,
+"y": 5.6
+}
+},
+"time": 0.4486551954488976,
+"velocity": 1.3459655863466928
+},
+{
+"acceleration": 3.000000000000002,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.450492634956934,
+"y": 5.6
+}
+},
+"time": 0.5182116694231839,
+"velocity": 1.5546350082695517
+},
+{
+"acceleration": 2.9999999999999982,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.34022688481815,
+"y": 5.6
+}
+},
+"time": 0.584853686334356,
+"velocity": 1.7545610590030682
+},
+{
+"acceleration": 2.9999999999999116,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.223128296420981,
+"y": 5.6
+}
+},
+"time": 0.6481663058328458,
+"velocity": 1.9444989174985379
+},
+{
+"acceleration": -2.9999999999999982,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 15.102441032467933,
+"y": 5.6
+}
+},
+"time": 0.7075151842792472,
+"velocity": 2.1225455528377366
+},
+{
+"acceleration": -3.0000000000000018,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 14.981753768514887,
+"y": 5.6
+}
+},
+"time": 0.7668640627256477,
+"velocity": 1.9444989174985352
+},
+{
+"acceleration": -3.000000000000002,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 14.864655180117715,
+"y": 5.6
+}
+},
+"time": 0.8301766822241387,
+"velocity": 1.754561059003062
+},
+{
+"acceleration": -3.0,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 14.754389429978934,
+"y": 5.6
+}
+},
+"time": 0.8968186991353099,
+"velocity": 1.5546350082695481
+},
+{
+"acceleration": -2.9999999999999987,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 14.653511655094322,
+"y": 5.6
+}
+},
+"time": 0.9663751731095964,
+"velocity": 1.3459655863466886
+},
+{
+"acceleration": -2.9999999999999987,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 14.563543453899573,
+"y": 5.6
+}
+},
+"time": 1.0391145753191182,
+"velocity": 1.1277473797181234
+},
+{
+"acceleration": -3.0000000000000004,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 14.484628373416923,
+"y": 5.6
+}
+},
+"time": 1.1172005010977424,
+"velocity": 0.8934896023822507
+},
+{
+"acceleration": -2.9999999999999996,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 14.415187396401786,
+"y": 5.6
+}
+},
+"time": 1.2090967742254413,
+"velocity": 0.6178007829991542
+},
+{
+"acceleration": -2.9999999999999996,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 14.351574428489391,
+"y": 5.6
+}
+},
+"time": 1.4150303685584926,
+"velocity": 0.0
+}
+]
