@@ -53,8 +53,8 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
 
-  AddressableLED m_led = new AddressableLED(4);
-  AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
+  // AddressableLED m_led = new AddressableLED(4);
+  // AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
 
   // AddressableLED m_led2;
   // AddressableLEDBuffer m_ledBuffer2 = new AddressableLEDBuffer(60);
@@ -65,13 +65,13 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+  //  m_robotContainer = new RobotContainer();
 
-    m_led.setLength(m_ledBuffer.getLength());
+    // m_led.setLength(m_ledBuffer.getLength());
 
-    // // Set the data
-    m_led.setData(m_ledBuffer);
-    m_led.start();
+    // // // Set the data
+    // m_led.setData(m_ledBuffer);
+    // m_led.start();
     // m_led2 = new AddressableLED(9);
 
     // m_ledBuffer2 = new AddressableLEDBuffer(61);
@@ -105,33 +105,34 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     Subsystems.m_armSubsystem.armMotor.setIdleMode(IdleMode.kCoast);
-    SmartDashboard.putNumber("AngleD", Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition() * (180 / Math.PI));
+   // SmartDashboard.putNumber("AngleD", Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition() * (180 / Math.PI));
     Subsystems.m_limelightSubsystem.updateLimelight();
-    SmartDashboard.putNumber("Y", Subsystems.m_limelightSubsystem.y);
-    SmartDashboard.putBoolean("color Sensor", Subsystems.m_shooterSubsystem.getColorSensor());
+    // SmartDashboard.putNumber("Y", Subsystems.m_limelightSubsystem.y);
+    // SmartDashboard.putBoolean("color Sensor", Subsystems.m_shooterSubsystem.getColorSensor());
     SmartDashboard.putNumber("Lime Dist", Subsystems.m_limelightSubsystem.calcVerticalDistance());
     
-    if (Controllers.m_driverController.getBButtonReleased()) {
-
+    if (Controllers.m_driverController.getBButtonPressed()) {
       Subsystems.m_shooterSubsystem.toggleChannel(false);
-
-    } else {
+    } else
+    {
       Subsystems.m_shooterSubsystem.toggleChannel(true);
-
     }
+  
+
+    
 
     // if (timer.get() % 1 < 0.02) {
     // isGreen = !isGreen;
     // }
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      if (Subsystems.m_shooterSubsystem.getPassed()) {
-        m_ledBuffer.setRGB(i, 0, 255, 0);
-      } else {
-        m_ledBuffer.setRGB(i, 100, 0, 100);
-      }
+    // for (var i = 0; i < 15; i++) {
+    //   if (Subsystems.m_shooterSubsystem.getPassed()) {
+    //     m_ledBuffer.setRGB(i, 0, 255, 0);
+    //   } else {
+    //     m_ledBuffer.setRGB(i, 100, 0, 100);
+    //   }
 
-    }
-    m_led.setData(m_ledBuffer);
+    // }
+    // m_led.setData(m_ledBuffer);
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
@@ -147,6 +148,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+      Subsystems.m_shooterSubsystem.toggleChannel(false);
     // Subsystems.m_driveSubsystem.setBrakeMode();
   }
 
@@ -175,10 +177,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    SmartDashboard.putNumber("top", Subsystems.m_shooterSubsystem.upperRPM());
-    SmartDashboard.putNumber("GetX", Subsystems.m_driveSubsystem.getOdometry().getPoseMeters().getX());
+    // SmartDashboard.putNumber("top", Subsystems.m_shooterSubsystem.upperRPM());
+    // SmartDashboard.putNumber("GetX", Subsystems.m_driveSubsystem.getOdometry().getPoseMeters().getX());
 
-    SmartDashboard.putNumber("GetY", Subsystems.m_driveSubsystem.getOdometry().getPoseMeters().getY());
+    // SmartDashboard.putNumber("GetY", Subsystems.m_driveSubsystem.getOdometry().getPoseMeters().getY());
   }
 
   @Override
@@ -191,7 +193,7 @@ public class Robot extends TimedRobot {
     // RobotContainer.Subsystems.m_intakeSubsystem.flashlight(true);
     // Subsystems.m_driveSubsystem.driverControlled = true;
     // Subsystems.m_driveSubsystem.nullRampRates();
-    Subsystems.m_driveSubsystem.setCurrentLimits(35);
+    Subsystems.m_driveSubsystem.setCurrentLimits(30);
     //Subsystems.m_climberSubsystem.resetEncoders();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -228,14 +230,16 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    
     Subsystems.m_climberSubsystem.climber.setIdleMode(IdleMode.kBrake);
-    SmartDashboard.putNumber("Climber Encoder", Subsystems.m_climberSubsystem.climber.getEncoder().getPosition());
-    SmartDashboard.putNumber("Input Voltage", Subsystems.m_armSubsystem.ff.calculate(0, 1));
-    SmartDashboard.putNumber("PID", Subsystems.m_armSubsystem.armController
-        .calculate(Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition(), 0));
-    SmartDashboard.putNumber("Target Angle", Subsystems.m_armSubsystem.targetAngle);
-    SmartDashboard.putNumber("Angle", Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition());
-
+    // SmartDashboard.putNumber("Climber Encoder", Subsystems.m_climberSubsystem.climber.getEncoder().getPosition());
+    // SmartDashboard.putNumber("Input Voltage", Subsystems.m_armSubsystem.ff.calculate(0, 1));
+    // SmartDashboard.putNumber("PID", Subsystems.m_armSubsystem.armController.calculate(Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition(), 0));
+    // SmartDashboard.putNumber("Target Angle", Subsystems.m_armSubsystem.targetAngle);
+    // SmartDashboard.putNumber("Angle", Subsystems.m_armSubsystem.armMotor.getEncoder().getPosition());
+    // if(!Subsystems.m_climberSubsystem.getClimbed()){
+    //   Subsystems.m_shooterSubsystem.toggleChannel(true);
+    // }
     // IntakeVelocityLog.append(Subsystems.m_intakeSubsystem.intake.getEncoder().getVelocity());
     // SmartDashboard.putNumber("Effort", Subsystems.m_intakeSubsystem.intakeVel());
     // rpmLog.append(Subsystems.m_driveSubsystem.getAverageRPM());
@@ -260,6 +264,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
         
     //Subsystems.m_armSubsystem.armMotor.set(0.09);
+
     //SmartDashboard.putNumber("Climber Encoder", Subsystems.m_climberSubsystem.climber.getEncoder().getPosition());
     // SmartDashboard.putBoolean("detect",
     // Subsystems.m_shooterSubsystem.colorSensor.get());

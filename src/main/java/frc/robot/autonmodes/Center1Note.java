@@ -22,7 +22,6 @@ public class Center1Note {
   public static Command getCommand() {
 
     Trajectory trajectory1 = Subsystems.m_driveSubsystem.getTrajectory("ShortTaxi");
-
     return Commands.runOnce(() -> Subsystems.m_driveSubsystem.resetPose(trajectory1.getInitialPose()))
         .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM, Constants.Auton.subwooferBottomRPM).deadlineWith(new AutonSlackinatorCommand()))
         .andThen(Commands.waitSeconds(Constants.Auton.feedTime)

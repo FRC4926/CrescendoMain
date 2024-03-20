@@ -96,7 +96,7 @@ return Math.abs(Math.atan(Constants.Robot.limeLightOffSet/calcVerticalDistance()
   }
 
   public double calcVerticalDistance() {
-    return (Constants.Field.speakerTagHeight-Constants.Robot.limelightHeight)/(Math.tan((Math.toRadians(y+Constants.Robot.limelightAngle))))-4.5;
+    return (Constants.Field.speakerTagHeight-Constants.Robot.limelightHeight)/(Math.tan((Math.toRadians(y+Constants.Robot.limelightAngle))));
   }
   public double calcVerticalDistanceSource() {
 
@@ -108,6 +108,6 @@ return Math.abs(Math.atan(Constants.Robot.limeLightOffSet/calcVerticalDistance()
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("limelight distance", calcVerticalDistance());
+    //SmartDashboard.putNumber("limelight distance", calcVerticalDistance());
   }
 }

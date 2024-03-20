@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 //import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.Subsystems;
 
@@ -69,10 +70,10 @@ public class DriveSubsystem extends SubsystemBase {
     return navX.getRotation2d();
   }
   public void pidControllerSetUp(){
-    SmartDashboard.putNumber("FF:",frontLeftPID.getFF());
-    SmartDashboard.putNumber("P", frontLeftPID.getP());
-    SmartDashboard.putNumber("I", frontLeftPID.getI());
-    SmartDashboard.putNumber("D", frontLeftPID.getD());
+    // putNumber("FF:",frontLeftPID.getFF());
+    // SmartDasSmartDashboard.hboard.putNumber("P", frontLeftPID.getP());
+    // SmartDashboard.putNumber("I", frontLeftPID.getI());
+    // SmartDashboard.putNumber("D", frontLeftPID.getD());
     frontLeftPID.setFF(0.0002,0);
     frontLeftPID.setP(0.,0);
     frontLeftPID.setI(0,0);
@@ -144,6 +145,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public DriveSubsystem() {
+    difDrive.setSafetyEnabled(false);
+
     frontLeftMotor.restoreFactoryDefaults();
     backLeftMotor.restoreFactoryDefaults();
     frontRightMotor.restoreFactoryDefaults();
@@ -327,26 +330,31 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Gyro Angle",m_odometry.getPoseMeters().getRotation().getDegrees());
     m_odometry.update(navX.getRotation2d(), getLeftEncoderPosition(),
         getRightEncoderPosition());
-        SmartDashboard.putNumber("Left Wheel Velocity", getLeftEncoderVelocity());
-        SmartDashboard.putNumber("Right Wheel Velocity", getRightEncoderVelocity());
+        // SmartDashboard.putNumber("Left Wheel Velocity", getLeftEncoderVelocity());
+        // SmartDashboard.putNumber("Right Wheel Velocity", getRightEncoderVelocity());
   }
 
   public Trajectory getTrajectory(String filePath) {
 
     try {
-      Path path = Filesystem.getDeployDirectory().toPath().resolve("paths/" + DriverStation.getAlliance().get().toString() + filePath + ".wpilib.json");
-      Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(path);
-      return trajectory;
+        Path path = Filesystem.getDeployDirectory().toPath().resolve("paths/" + RobotContainer.m_alliance.getSelected() + filePath + ".wpilib.json");
+        Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(path);
+        return trajectory;
+ 
     } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + ex.getMessage(), ex.getStackTrace());
+      // DriverStation.reportError("Unable to open trajectory: " + ex.getMessage(), ex.getStackTrace());
     }
     
     try {
-      return TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("paths/" + "Red" + filePath + ".wpilib.json"));
+      return TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("paths/" + RobotContainer.m_alliance.getSelected() + filePath + ".wpilib.json"));
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return null;
+    try {
+      return  TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("paths/BlueShortTaxi.wpilib.json"));
+    } catch (Exception e) {
+      return null;    
+}
   }
 
   public RamseteCommand getRamseteCommand(Trajectory trajectory) {

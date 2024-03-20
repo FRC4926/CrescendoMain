@@ -39,9 +39,9 @@ public class Left2Note {
         .andThen(new AutonVisionCommand())
        // .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.convey(0)))
         // .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.zeroMotors())).alongWith(Commands.runOnce(()->Subsystems.m_shooterSubsystem.convey(0)))
-        .andThen(new AutonArmCommand(-5, false))
+        .andThen(new AutonArmCommand(-7, false))
         // .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM, Constants.Auton.subwooferBottomRPM))
-        .andThen((Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand())).deadlineWith(new AutonArmCommand(-5, true)))
+        .andThen((Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand())).deadlineWith(new AutonArmCommand(-7, true)))
         .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.updateHasPassed()))
         .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.conveyerMotor.set(0)));
 

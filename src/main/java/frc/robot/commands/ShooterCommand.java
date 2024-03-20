@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,7 +33,7 @@ public class ShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(Subsystems.m_shooterSubsystem.getColorSensor()){
+    if(Subsystems.m_shooterSubsystem.distanceSensorTriggered()){
         Subsystems.m_shooterSubsystem.changePassed(true);
     }
     // if(RobotContainer.Controllers.m_operatorController.getRightY()>.2){
@@ -53,7 +55,7 @@ public class ShooterCommand extends Command {
     //reset color sensor in times of dire need
     if (Controllers.m_operatorController.getXButton())
     {
-      Subsystems.m_shooterSubsystem.changePassed(Subsystems.m_shooterSubsystem.getColorSensor());
+      Subsystems.m_shooterSubsystem.changePassed(Subsystems.m_shooterSubsystem.distanceSensorTriggered());
     }
 
     //Override the color sensor for full operator control
@@ -61,7 +63,7 @@ public class ShooterCommand extends Command {
       Subsystems.m_shooterSubsystem.setOverride(!Subsystems.m_shooterSubsystem.getOverride());
 
       //reset has passed in case you are switching back into override mode
-      Subsystems.m_shooterSubsystem.changePassed(Subsystems.m_shooterSubsystem.getColorSensor());
+      Subsystems.m_shooterSubsystem.changePassed(Subsystems.m_shooterSubsystem.distanceSensorTriggered());
     }
 
     if(Controllers.m_operatorController.getRightBumper()) 
@@ -90,52 +92,56 @@ public class ShooterCommand extends Command {
         Subsystems.m_shooterSubsystem.fullSend();
       }
     } else {
-      //Rev at steady speed
-      if(!Subsystems.m_shooterSubsystem.getOverride()){
-        //Subsystems.m_shooterSubsystem.zeroMotors();
-        Subsystems.m_shooterSubsystem.RPMShoot(-(Constants.Robot.SteadySpeedRPM+Constants.Robot.RPMOffset), (-Constants.Robot.SteadySpeedRPM+Constants.Robot.RPMOffset));
-      }else{
+
         // if it's in overide, don't rev at steady state
         Subsystems.m_shooterSubsystem.zeroMotors();
-      }
+      
       
     }
 
+    
     if((Controllers.m_operatorController.getRightTriggerAxis()) > .2) 
     {
       //Shoot
       Subsystems.m_shooterSubsystem.convey(Constants.Robot.conveyorEffort);
 
       //Reset Color Sensor
-      Subsystems.m_shooterSubsystem.changePassed(Subsystems.m_shooterSubsystem.getColorSensor());
+      Subsystems.m_shooterSubsystem.changePassed(Subsystems.m_shooterSubsystem.distanceSensorTriggered());
     } else if(Controllers.m_operatorController.getLeftBumper()) 
     {
       //Outake at 1/2 speed
       Subsystems.m_shooterSubsystem.convey(-Constants.Robot.conveyorEffort/2);
-    } else if(Controllers.m_operatorController.getLeftTriggerAxis()>.2) 
+      Subsystems.m_shooterSubsystem.intake(-Constants.Robot.intakeEffort/2);
+    }
+    else if(Controllers.m_operatorController.getLeftTriggerAxis()>.2) 
     {
-
-      //Run the intake when the color sensor is not detecting (not in overide mode)
-      if(!Subsystems.m_shooterSubsystem.getOverride()){
-        if (!Subsystems.m_shooterSubsystem.getPassed())
-        {
+      // if(!Subsystems.m_shooterSubsystem.getOverride())
+      // {
+      //   if (!Subsystems.m_shooterSubsystem.getPassed())
+      //     {
+      //       Subsystems.m_shooterSubsystem.intake(Constants.Robot.intakeEffort);
+      //       Subsystems.m_shooterSubsystem.convey(Constants.Robot.conveyorEffort);
+      //     }
+      //     else 
+      //     {
+      //       Subsystems.m_shooterSubsystem.intake(0);
+      //       Subsystems.m_shooterSubsystem.convey(0);
+      //     }
+      // }
+      // else 
+      // {
+          //Intake at a lower speed and without color sensor dependance if overide mode is activated
           Subsystems.m_shooterSubsystem.intake(Constants.Robot.intakeEffort);
           Subsystems.m_shooterSubsystem.convey(Constants.Robot.conveyorEffort);
-        } else 
-        {
-          Subsystems.m_shooterSubsystem.intake(0);
-          Subsystems.m_shooterSubsystem.convey(0);
-        }
-    }else{
-          //Intake at a lower speed and without color sensor dependance if overide mode is activated
-          Subsystems.m_shooterSubsystem.intake(Constants.Robot.intakeEffort*3/4);
-          Subsystems.m_shooterSubsystem.convey(Constants.Robot.conveyorEffort*3/4);
+          Subsystems.m_shooterSubsystem.lowerMotor.setIdleMode(IdleMode.kBrake);
+          Subsystems.m_shooterSubsystem.upperMotor.setIdleMode(IdleMode.kBrake);
+      // }
     }
-
-    } else 
-    {
-        Subsystems.m_shooterSubsystem.intake(0);
-        Subsystems.m_shooterSubsystem.convey(0);    
+    else{
+      Subsystems.m_shooterSubsystem.intake(0);
+      Subsystems.m_shooterSubsystem.convey(0);
+      Subsystems.m_shooterSubsystem.lowerMotor.setIdleMode(IdleMode.kCoast);
+      Subsystems.m_shooterSubsystem.upperMotor.setIdleMode(IdleMode.kCoast);
     }
 
 

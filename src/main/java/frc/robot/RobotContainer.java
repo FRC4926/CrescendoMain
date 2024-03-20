@@ -78,21 +78,22 @@ public class RobotContainer {
   }
 
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-
+  public static SendableChooser<String> m_alliance = new SendableChooser<>();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-
+    m_alliance.addOption("Blue","Blue");
+    m_alliance.addOption("Red","Red");
     m_chooser.setDefaultOption("Center2Note", Center2Note.getCommand());
     m_chooser.addOption("ShortTaxi", Center1Note.getCommand());
     m_chooser.addOption("Left2Note", Left2Note.getCommand());
-    //m_chooser.addOption("Right2Note", Left2Note.getCommand());
+    m_chooser.addOption("Right2Note", Right2Note.getCommand());
     m_chooser.addOption("Left3Note", Left3Note.getCommand());
     //m_chooser.addOption("Left4Note", Left4Note.getCommand());
-    //m_chooser.addOption("Center3Note", Center3Note.getCommand());
+    m_chooser.addOption("Center3Note", Center3Note.getCommand());
     //m_chooser.addOption("Right2Note", Right2Note.getCommand());
    // m_chooser.addOption("Right3Note", Right3Note.getCommand());
     Shuffleboard.getTab("Autonomous").add(m_chooser);

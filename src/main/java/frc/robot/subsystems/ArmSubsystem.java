@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.Controllers;
+import frc.robot.RobotContainer.Subsystems;
 import frc.robot.util.LookUpTableShooterAngles;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -44,9 +45,6 @@ public class ArmSubsystem extends SubsystemBase {
   public double angle = armMotor.getEncoder().getPosition();
   public PIDController armController = new PIDController(p, i, d);
   private LookUpTableShooterAngles angles = new LookUpTableShooterAngles();
-  private final TrapezoidProfile m_profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(5, 3));
-  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
-  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
   Timer timer = new Timer();
   public ArmSubsystem() {
  
@@ -63,10 +61,14 @@ public class ArmSubsystem extends SubsystemBase {
 
 
 
-    armMotor.setSmartCurrentLimit(60);
+    armMotor.setSmartCurrentLimit(55);
     // armMotor2.getEncoder().setPosition(Constants.Robot.initialShoulderAngle);
 
   }
+  public double getAngle(double distance){
+    return angles.getAngle(distance);
+  }
+
   public void resetTimer(){
     timer.reset();
     timer.start();
@@ -74,37 +76,22 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean slackOver(){
     return timer.get()>1;
   }
-  public void changeSlackBool(int x){
-    slackBool = x;
-  }
+
   
 
 
   public void goToSpecifiedAngle(double angle) {
-    angle = angle*(Math.PI/180);
-    targetAngle = angle;
+    if(!(Subsystems.m_limelightSubsystem.getID()==-1)){
+        angle = angle*(Math.PI/180);
+    
+      targetAngle = angle;
+    }
+
     // Controllers.m_operatorController.setRumble(RumbleType.kBothRumble, 0);
     armController.setSetpoint(targetAngle);
-    SmartDashboard.putNumber("Predicted Feedforward", ff.calculate(targetAngle, ffVelocity));
-    SmartDashboard.putNumber("Predicted PID", armController.calculate(armMotor.getEncoder().getPosition(), targetAngle));
+    // SmartDashboard.putNumber("Predicted Feedforward", ff.calculate(targetAngle, ffVelocity));
+    // SmartDashboard.putNumber("Predicted PID", armController.calculate(armMotor.getEncoder().getPosition(), targetAngle));
    armMotor.setVoltage((armController.calculate(armMotor.getEncoder().getPosition(), targetAngle) + ff.calculate(targetAngle, ffVelocity)));
-
-  }
-
-  public void trapezoidGoToHome() {
-    m_goal = new TrapezoidProfile.State(Constants.Robot.initialShoulderAngle, 0);
-    m_setpoint = m_profile.calculate(dT, m_setpoint, m_goal);
-    armController.setSetpoint(m_setpoint.position);
-    armMotor.setVoltage(armController.calculate(m_setpoint.position) + ff.calculate(m_setpoint.position, ffVelocity));
-    // armMotor2.setVoltage(armController.calculate(m_setpoint.position) + ff.calculate(m_setpoint.position, ffVelocity));
-  }
-
-  public void trapezoidSubWooferShot() {
-    m_goal = new TrapezoidProfile.State(Constants.Robot.subWooferAngle, 0);
-    m_setpoint = m_profile.calculate(dT, m_setpoint, m_goal);
-    armController.setSetpoint(m_setpoint.position);
-    armMotor.setVoltage(armController.calculate(m_setpoint.position) + ff.calculate(m_setpoint.position, ffVelocity));
-    // armMotor2.setVoltage(armController.calculate(m_setpoint.position) + ff.calculate(m_setpoint.position, ffVelocity));
   }
 
   public void manualControl(double input) {
@@ -114,37 +101,27 @@ public class ArmSubsystem extends SubsystemBase {
     } else 
       armMotor.set(input);
   }
+
   public boolean isFinished(double targetAngle){
     return Math.abs(Math.toDegrees(armMotor.getEncoder().getPosition())-targetAngle)<1.5;
   }
-  
+  public void goToHomePositionConstantEffort()
+  {
+    if(armMotor.getEncoder().getPosition()*180/Math.PI>-10)
+    {
+      armMotor.set(-0.3);
+    }
+    else if(armMotor.getEncoder().getPosition()*180/Math.PI>-20){
+      armMotor.set(-.1);
+    }else{
+      armMotor.set(0);
+    }
+  }
   @Override
   public void periodic() {
     if(slackOver()){
       timer.stop();
     }
     // This method will be called once per scheduler run
-  }
-
-  // SYS ID STUFF BELOW
-
-  Consumer<Measure<Voltage>> drive = (Measure<Voltage> volts) -> {
-    armMotor.setVoltage(volts.baseUnitMagnitude());
-    // armMotor2.setVoltage(volts.baseUnitMagnitude());
-  };
-  Consumer<SysIdRoutineLog> log = (SysIdRoutineLog logged) -> {
-    logged.motor("motor");
-  };
-
-  SysIdRoutine routine = new SysIdRoutine(
-      new SysIdRoutine.Config(),
-      new SysIdRoutine.Mechanism(drive, log, this));
-
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return routine.quasistatic(direction);
-  }
-
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return routine.dynamic(direction);
   }
 }

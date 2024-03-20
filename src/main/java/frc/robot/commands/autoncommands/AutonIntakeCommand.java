@@ -26,7 +26,7 @@ public class AutonIntakeCommand extends Command {
   @Override
   public void execute() {
         Subsystems.m_shooterSubsystem.updateHasPassed();
-        Subsystems.m_shooterSubsystem.intake(Constants.Robot.intakeEffort);
+        Subsystems.m_shooterSubsystem.intake(Constants.Robot.autonIntakeEffort);
         Subsystems.m_shooterSubsystem.convey(Constants.Robot.conveyorEffort);
         // RobotContainer.Subsystems.m_intakeSubsystem.runIntake(.5);
         // if(RobotContainer.Subsystems.m_intakeSubsystem.shouldIntakeStop())

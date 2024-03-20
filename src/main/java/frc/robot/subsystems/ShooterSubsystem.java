@@ -9,6 +9,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
@@ -20,9 +23,9 @@ import frc.robot.RobotContainer;
 
 
 public class ShooterSubsystem extends SubsystemBase {
-  private PowerDistribution p = new PowerDistribution(25, ModuleType.kRev);
-  private CANSparkMax lowerMotor = new CANSparkMax(Constants.CAN_IDS.SHOOTER_BOTTOM, MotorType.kBrushless);
-  private CANSparkMax upperMotor = new CANSparkMax(Constants.CAN_IDS.SHOOTER_TOP, MotorType.kBrushless);
+  private PowerDistribution p = new PowerDistribution(12, ModuleType.kRev);
+  public CANSparkMax lowerMotor = new CANSparkMax(Constants.CAN_IDS.SHOOTER_BOTTOM, MotorType.kBrushless);
+  public CANSparkMax upperMotor = new CANSparkMax(Constants.CAN_IDS.SHOOTER_TOP, MotorType.kBrushless);
   public CANSparkMax conveyerMotor = new CANSparkMax(Constants.CAN_IDS.CONVEYOR, MotorType.kBrushless);
   private CANSparkMax intakeMotor = new CANSparkMax(Constants.CAN_IDS.INTAKE, MotorType.kBrushless);
   //public PIDController  betterController = new PIDController(0.0012,0.00015,0);
@@ -30,19 +33,34 @@ public class ShooterSubsystem extends SubsystemBase {
   private PIDController  upperMotorPIDController = new PIDController(.01,0,0);
   //SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(-0.73956, 0, 0);
   private boolean hasPassed = false;
-  private double targetRPM = 5000;
+  public double targetRPM = 3000;
   private boolean reached = false;
   private double currentRPM = 0;
   private boolean override = false;
   private boolean ampMode = false;
   Timer timer = new Timer();
   private DigitalInput colorSensor = new DigitalInput(Constants.CAN_IDS.COLOR_ID);
+  private AnalogInput distanceSensor = new AnalogInput(Constants.CAN_IDS.DISTANCE_ID);
+  // AddressableLED m_led = new AddressableLED(4);
+  // AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
   
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     hasPassed = false;
     override = false;
+
+    
+    // // Set the data
+    // m_led.setLength(m_ledBuffer.getLength());
+    // m_led.setData(m_ledBuffer);
+    // m_led.start();
+
+    // for (var i = 0; i < 15; i++) 
+    // {
+    //     m_ledBuffer.setRGB(i, 100, 0, 100);
+    // }
+    // m_led.setData(m_ledBuffer);
 
     lowerMotor.restoreFactoryDefaults();
     upperMotor.restoreFactoryDefaults();
@@ -65,10 +83,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     lowerMotorPIDController.setTolerance(Constants.Robot.shooterTolerance);
     upperMotorPIDController.setTolerance(Constants.Robot.shooterTolerance);
-    SmartDashboard.putNumber("targetLowerEffort", 0);
-    SmartDashboard.putNumber("targetUpperEffort", 0);
-    SmartDashboard.putNumber("targetLowerRPM", 0);
-    SmartDashboard.putNumber("targetUpperRPM", 0);
+    // SmartDashboard.putNumber("targetLowerEffort", 0);
+    // SmartDashboard.putNumber("targetUpperEffort", 0);
+    // SmartDashboard.putNumber("targetLowerRPM", 0);
+    // SmartDashboard.putNumber("targetUpperRPM", 0);
+
+    distanceSensor.setAverageBits(4);
 
   }
 
@@ -132,6 +152,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public void changePassed(boolean in)
   {
     hasPassed = in;
+    // for (var i = 0; i < 15; i++) {
+    //   if (getPassed()) {
+    //     m_ledBuffer.setRGB(i, 0, 255, 0);
+    //   } else {
+    //     m_ledBuffer.setRGB(i, 100, 0, 100);
+    //   }
+    // }
+    // m_led.setData(m_ledBuffer);
   }
 
   public boolean getPassed()
@@ -139,9 +167,15 @@ public class ShooterSubsystem extends SubsystemBase {
     return hasPassed;
   }
 
-  public boolean getColorSensor()
+  public boolean getLimitSwitch()
   {
     return colorSensor.get();
+
+  }
+
+  public boolean distanceSensorTriggered()
+  {
+    return distanceSensor.getAverageVoltage()>0.35;
   }
 
   public void fullSend()
@@ -169,10 +203,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void updateHasPassed(){
     hasPassed = colorSensor.get();
+
   }
   public double lowerRPM()
   {
     return lowerMotor.getEncoder().getVelocity();
+  }
+
+  public void updateLEDs()
+  {
+
   }
 
   public double upperRPM()
@@ -184,12 +224,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     currentRPM = lowerRPM();
     //upperBetterController = 
-    SmartDashboard.putNumber("Upper RPM", currentRPM);
-    SmartDashboard.putNumber("Lower RPM", lowerRPM());
+    // SmartDashboard.putNumber("Upper RPM", currentRPM);
+    // SmartDashboard.putNumber("Lower RPM", lowerRPM());
     if(ampMode){
       targetRPM = 1000;
     }else{
-      targetRPM = 4500;
+      targetRPM = 3000;
     }
     // This method will be called once per scheduler run
     

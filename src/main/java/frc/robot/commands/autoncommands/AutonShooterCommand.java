@@ -48,7 +48,7 @@ public class AutonShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    SmartDashboard.putBoolean("Is Finished", Subsystems.m_shooterSubsystem.isFinished());
+    //SmartDashboard.putBoolean("Is Finished", Subsystems.m_shooterSubsystem.isFinished());
     return Subsystems.m_shooterSubsystem.isFinishedAuton(bottomRPM);
   }
 }

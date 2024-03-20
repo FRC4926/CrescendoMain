@@ -15,12 +15,16 @@ import frc.robot.Constants;
 public class ClimberSubsystem extends SubsystemBase {
 
   public CANSparkMax climber = new CANSparkMax(Constants.CAN_IDS.CLIMBER, MotorType.kBrushless);
-
+  public boolean climbed = false;
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
     climber.setIdleMode(IdleMode.kBrake);
     climber.setSmartCurrentLimit(40);
     //climber.setInverted(true);
+  }
+
+  public boolean getClimbed(){
+    return climbed;
   }
 
   public void resetEncoders() {
@@ -34,10 +38,11 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void climb(double effort) {
     SmartDashboard.putNumber("Climber Encoder", climber.getEncoder().getPosition());
-    if (climber.getEncoder().getPosition() > -20 && effort > 0) {
+    if (climber.getEncoder().getPosition() > 20 && effort > 0) {
       climber.set(0);
-    // } else if (climber.getEncoder().getPosition() < Constants.Robot.climberMaxEncoderPosition && effort < 0) {
-    //   climber.set(0);
+    } else if (climber.getEncoder().getPosition() < Constants.Robot.climberMaxEncoderPosition && effort < 0) {
+      climbed = true;
+      climber.set(0);
     } else {
       climber.set(effort);
     }

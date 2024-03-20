@@ -31,7 +31,7 @@ public class ClimberCommand extends Command {
 
     double effort = Controllers.m_operatorController.getLeftY();
     effort = MathUtil.applyDeadband(effort, Constants.Controller.deadband);
-    //SmartDashboard.putNumber("ClimberEffort", effort);
+    //SmartDashboard.putNumber("ClimberPosition", effort);
     Subsystems.m_climberSubsystem.climb(effort);
     
     //Subsystems.m_climberSubsystem.climber.set(effort);

@@ -37,12 +37,13 @@ public class Left3Note {
         //.andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.intake(0)))
         .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory2))
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)))
+        .andThen(Commands.waitSeconds(0.1))
         .andThen(new AutonVisionCommand())
        // .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.convey(0)))
         // .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.zeroMotors())).alongWith(Commands.runOnce(()->Subsystems.m_shooterSubsystem.convey(0)))
-        .andThen(new AutonArmCommand(-5, false))
+        .alongWith(new AutonArmCommand(-7, false))
         // .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM, Constants.Auton.subwooferBottomRPM))
-        .andThen((Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand())).deadlineWith(new AutonArmCommand(-5, true)))
+        .andThen((Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand())).deadlineWith(new AutonArmCommand(-7, true)))
         .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.updateHasPassed()))
         
         .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.conveyerMotor.set(0)))
@@ -51,14 +52,16 @@ public class Left3Note {
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)))
           .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory4))
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)))
+        .andThen(Commands.waitSeconds(0.1))
         .andThen(new AutonVisionCommand())
         //.andThen(new AutonVisionCommand())
        // .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.convey(0)))
         // .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.zeroMotors())).alongWith(Commands.runOnce(()->Subsystems.m_shooterSubsystem.convey(0)))
-        .andThen(new AutonArmCommand(-5, false))
+        .alongWith(new AutonArmCommand(-7, false))
         // .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM, Constants.Auton.subwooferBottomRPM))
-        .andThen((Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand())).deadlineWith(new AutonArmCommand(-5, true)))
+        .andThen((Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand())).deadlineWith(new AutonArmCommand(-7, true)))
         .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.updateHasPassed()))
-        .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.conveyerMotor.set(0)));
+        .andThen(Commands.runOnce(()->Subsystems.m_shooterSubsystem.conveyerMotor.set(0)))
+        .andThen(Commands.runOnce(()->Subsystems.m_armSubsystem.armMotor.set(-0.1)));
   }
 }

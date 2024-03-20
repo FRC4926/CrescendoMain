@@ -32,7 +32,7 @@ public class AutonVisionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("AutonVision",Subsystems.m_limelightSubsystem.getX());
+    //SmartDashboard.putNumber("AutonVision",Subsystems.m_limelightSubsystem.getX());
     RobotContainer.Subsystems.m_limelightSubsystem.updateLimelight();
     turnEffort = alignPidController.getEffort();
       RobotContainer.Subsystems.m_driveSubsystem.drive(0, turnEffort);
@@ -47,6 +47,6 @@ public class AutonVisionCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(Subsystems.m_limelightSubsystem.getX())<5 && RobotContainer.Subsystems.m_driveSubsystem.frontLeftMotor.getEncoder().getVelocity()<.2 && Subsystems.m_limelightSubsystem.getID()==1;
+    return Math.abs(Subsystems.m_limelightSubsystem.getX())<5;
   }
 }

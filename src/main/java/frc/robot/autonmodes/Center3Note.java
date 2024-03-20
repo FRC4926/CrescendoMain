@@ -20,8 +20,9 @@ public class Center3Note {
 
   public static Command getCommand() {
     Trajectory trajectory1 = Subsystems.m_driveSubsystem.getTrajectory("Center2NoteForward");
-    Trajectory trajectory2 = Subsystems.m_driveSubsystem.getTrajectory("Center3NoteForward");
-    Trajectory trajectory3 = Subsystems.m_driveSubsystem.getTrajectory("Center3NoteBackward");
+    Trajectory trajectory2 = Subsystems.m_driveSubsystem.getTrajectory("Center2NoteBackward");
+    Trajectory trajectory3 = Subsystems.m_driveSubsystem.getTrajectory("Center3NoteForward");
+    Trajectory trajectory4 = Subsystems.m_driveSubsystem.getTrajectory("Center3NoteBackward");
 
     return Commands.runOnce(() -> Subsystems.m_driveSubsystem.resetPose(trajectory1.getInitialPose()))
         .andThen(new AutonShooterCommand(Constants.Auton.subwooferTopRPM, Constants.Auton.subwooferBottomRPM).deadlineWith(new AutonSlackinatorCommand()))
@@ -34,10 +35,11 @@ public class Center3Note {
         .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory2).deadlineWith(new AutonIntakeCommand()))
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)))
         //.andThen(Commands.runOnce(() -> Subsystems.m_intakeSubsystem.stop()))
-        .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory3))
+        .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory3)).deadlineWith(new AutonIntakeCommand())
             // .alongWith(new AutonShooterCommand(0, 0)))
         .andThen(Commands.runOnce(() -> Subsystems.m_driveSubsystem.tankDriveVolts(0, 0)))
         //.andThen(Commands.runOnce(() -> Subsystems.m_intakeSubsystem.stop()))
+        .andThen(Subsystems.m_driveSubsystem.getRamseteCommand(trajectory4))
         .andThen(Commands.waitSeconds(Constants.Auton.feedTime).deadlineWith(new AutonConveyorCommand()));
   }
 }

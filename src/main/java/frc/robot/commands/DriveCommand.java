@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
@@ -27,7 +28,7 @@ public class DriveCommand extends Command {
   @Override
   public void execute() {
     // RobotContainer.Subsystems.m_driveSubsystem.setCurrentLimits(60);
-
+    SmartDashboard.putNumber("Gyro", Subsystems.m_driveSubsystem.getGyroYaw()%360);
     double forward = -Controllers.m_driverController.getLeftY();
     double rotate = -Controllers.m_driverController.getRightX();
 
@@ -35,11 +36,18 @@ public class DriveCommand extends Command {
     MathUtil.applyDeadband(rotate, Constants.Controller.deadband);
 
     forward = Math.signum(forward) * Math.pow(forward, 2);
-    rotate = (rotate) / 2;
 
-    if (forward != 0 || rotate != 0) {
-      Subsystems.m_driveSubsystem.drive(forward, rotate);
+    if (Controllers.m_driverController.getRightTriggerAxis()>0.05) {
+    rotate = (rotate)/1;
+    } else {
+    rotate = (rotate)/1.8;
     }
+    if(!RobotContainer.Controllers.m_driverController.getAButton() && !RobotContainer.Controllers.m_driverController.getXButton()){
+       Subsystems.m_driveSubsystem.drive(forward, rotate);
+    }
+    // if (forward != 0 || rotate != 0) {
+    
+    // }
   }
 
   // Called once the command ends or is interrupted.
